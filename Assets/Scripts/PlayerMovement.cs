@@ -3,6 +3,7 @@ using UnityEngine.Networking;
 
 public class PlayerMovement : NetworkBehaviour
 {
+    public Transform headTr;
 
     public override void OnStartLocalPlayer()
     {
@@ -17,7 +18,17 @@ public class PlayerMovement : NetworkBehaviour
         {
             float dx = Input.GetAxis("Horizontal") * Time.deltaTime * speed;
             float dz = Input.GetAxis("Vertical") * Time.deltaTime * speed;
-            transform.Translate(dx, 0, dz);
+
+            Vector3 moveDir = headTr.forward;
+            moveDir.y = 0;
+            moveDir.Normalize();
+
+            Vector3 rightDir = headTr.right;
+            rightDir.y = 0;
+            rightDir.Normalize();
+
+            transform.Translate(moveDir * dz);
+            transform.Translate(rightDir * dx);
         } 
 
         if (isServer)

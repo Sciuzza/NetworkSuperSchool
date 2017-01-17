@@ -21,6 +21,7 @@ public class DamageArea : NetworkBehaviour
     }
 
 
+
     void OnTriggerEnter(Collider coll)
     {
         if (!isServer)
