@@ -22,7 +22,7 @@ public class PlayerMovement : NetworkBehaviour
 
         if (isServer)
         {
-            Debug.Log(this.name + " - " + this.connectionToClient.address + " - " + this.transform.position);
+        //    Debug.Log(this.name + " - " + this.connectionToClient.address + " - " + this.transform.position);
         }
     }
 
