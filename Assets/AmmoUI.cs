@@ -8,7 +8,7 @@ public class AmmoUI : MonoBehaviour
 
 	void Update ()
     {
-        text.text = pwu.CurrentWeaponAmmo.ToString();
+       if (pwu != null) text.text = pwu.CurrentWeaponAmmo.ToString();
 	}
 
 }

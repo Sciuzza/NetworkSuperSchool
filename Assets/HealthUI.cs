@@ -8,7 +8,7 @@ public class HealthUI : MonoBehaviour
 
 	void Update ()
     {
-        text.text = ps.health.ToString();
+        if (ps != null) text.text = ps.health.ToString();
 	}
 
 }
