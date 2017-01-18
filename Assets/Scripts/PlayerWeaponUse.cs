@@ -1,9 +1,11 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
+using System.Collections;
 
 public class PlayerWeaponUse : NetworkBehaviour
 {
     public Transform headTr;
+    public GameObject lineRenderer;
 
 	void Update ()
     {
@@ -30,13 +32,28 @@ public class PlayerWeaponUse : NetworkBehaviour
             if (ps != null)
             {
                 Debug.DrawLine(headTr.position, hit.point, Color.green, 1f);
-                ps.TakeDamage(10);
+                ps.ServerTakeDamage(10);
             }
             else
             {
                 Debug.DrawLine(headTr.position, hit.point, Color.red, 1f);
             }
+            RpcShootFeedback(hit.point);
         }
+    }  
+
+    public IEnumerator DespawnShootFeedback(GameObject shootFeedback)
+    {
+        yield return new WaitForSeconds(1f);
+        Destroy(shootFeedback);
     }
 
+    [ClientRpc]
+    public void RpcShootFeedback(Vector3 hitPoint)
+    {
+        GameObject shootSpawned = (GameObject)Instantiate(lineRenderer, headTr.position, Quaternion.identity);
+        shootSpawned.GetComponent<LineRenderer>().SetPosition(0, headTr.position);
+        shootSpawned.GetComponent<LineRenderer>().SetPosition(1, hitPoint);
+        StartCoroutine(DespawnShootFeedback(shootSpawned));
+    }
 }
