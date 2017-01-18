@@ -1,10 +1,17 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+
+using UnityEngine;
 using UnityEngine.Networking;
 
 public class PlayerState : NetworkBehaviour
 {
     [SyncVar]
     public int health = 100;
+
+    public float dyingTimer = 3;
+    public float getBackToAction = 2;
+
+    Vector3 tempOutOfZonePos = new Vector3(1000, 1000, 1000);
 
     public void ServerTakeDamage(int dmg)
     {
@@ -24,20 +31,8 @@ public class PlayerState : NetworkBehaviour
         // Notify the clients that the player is dead
         RpcKillPlayer();
 
-        // Respawn a few seconds later
-        Invoke("ServerRespawn", 3.0f);
-    }
+        StartCoroutine(this.PlayerDyingTime());
 
-    private void ServerRespawn()
-    {
-        // Revive the player
-        health = 100;
-
-        // Move to a spawn point
-        Vector3 respawnPosition = FindObjectOfType<NetworkManager>().GetStartPosition().position;
-
-        // Tell all clients that the player is now enabled and respawn it
-        RpcRevivePlayer(respawnPosition);
     }
 
     [ClientRpc]
@@ -47,8 +42,62 @@ public class PlayerState : NetworkBehaviour
         GetComponent<PlayerMovement>().enabled = false;
         GetComponent<PlayerWeaponUse>().enabled = false;
         GetComponent<MeshRenderer>().material.color = Color.black;
-        GetComponentInChildren<MeshRenderer>().material.color = Color.black;
     }
+
+    private IEnumerator PlayerDyingTime()
+    {
+        var timer = 0.0f;
+
+        while (timer < this.dyingTimer)
+        {
+            timer += Time.deltaTime;
+            yield return null;
+        }
+
+        // Respawn a few seconds later
+        StartCoroutine(this.ServerRespawn());
+    }
+
+    private IEnumerator ServerRespawn()
+    {
+        // Revive the player
+        health = 100;
+
+        RpcMovePlayerOutOfCombat(this.tempOutOfZonePos);
+
+        var timer = 0;
+
+        while (timer < this.getBackToAction)
+        {
+            yield return null;
+        }
+
+        // Move to a spawn point
+        var respawnPosition = FindObjectOfType<NetworkManager>().GetStartPosition().position;
+
+        // Tell all clients that the player is now enabled and respawn it
+        this.RpcRevivePlayer(respawnPosition);
+
+
+    }
+
+    [ClientRpc]
+    public void RpcMovePlayerOutOfCombat(Vector3 outOfCombatZonePos)
+    {
+        
+        this.transform.position = outOfCombatZonePos;
+        // Disable the player 
+<<<<<<< HEAD
+        GetComponent<PlayerMovement>().enabled = false;
+        GetComponent<PlayerWeaponUse>().enabled = false;
+        GetComponent<MeshRenderer>().material.color = Color.black;
+        GetComponentInChildren<MeshRenderer>().material.color = Color.black;
+=======
+        
+        GetComponent<MeshRenderer>().material.color = Color.white;
+>>>>>>> 6cdce88db4162ce7ae62a754210452bd9f172221
+    }
+
 
     [ClientRpc]
     public void RpcRevivePlayer(Vector3 respawnPosition)
@@ -61,5 +110,5 @@ public class PlayerState : NetworkBehaviour
         GetComponent<MeshRenderer>().material.color = Color.white;
         GetComponentInChildren<MeshRenderer>().material.color = Color.white;
     }
-
+  
 }
