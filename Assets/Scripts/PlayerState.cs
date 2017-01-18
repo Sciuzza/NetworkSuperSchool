@@ -66,10 +66,11 @@ public class PlayerState : NetworkBehaviour
 
         RpcMovePlayerOutOfCombat(this.tempOutOfZonePos);
 
-        var timer = 0;
+        var timer = 0.0f;
 
         while (timer < this.getBackToAction)
         {
+            timer += Time.deltaTime;
             yield return null;
         }
 
