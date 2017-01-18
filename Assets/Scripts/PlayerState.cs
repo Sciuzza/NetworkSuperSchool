@@ -87,15 +87,11 @@ public class PlayerState : NetworkBehaviour
         
         this.transform.position = outOfCombatZonePos;
         // Disable the player 
-<<<<<<< HEAD
+
         GetComponent<PlayerMovement>().enabled = false;
         GetComponent<PlayerWeaponUse>().enabled = false;
         GetComponent<MeshRenderer>().material.color = Color.black;
         GetComponentInChildren<MeshRenderer>().material.color = Color.black;
-=======
-        
-        GetComponent<MeshRenderer>().material.color = Color.white;
->>>>>>> 6cdce88db4162ce7ae62a754210452bd9f172221
     }
 
 
