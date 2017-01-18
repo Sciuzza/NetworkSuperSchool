@@ -14,7 +14,7 @@ public class PlayerWeaponUse : NetworkBehaviour
     // -1 means infinite
     // 0 cannot shoot
     // >0 can shoot
-    public SyncListInt ammoList;
+    public SyncListInt ammoList = new SyncListInt();
 
     [SyncVar]
     public int selectedWeaponIndex = 0;
@@ -24,20 +24,23 @@ public class PlayerWeaponUse : NetworkBehaviour
         get { return ammoList[selectedWeaponIndex]; }
     }
 
+    public override void OnStartLocalPlayer()
+    {
+        FindObjectOfType<AmmoUI>().pwu = this;
+    }
 
-    void Awake()
+    public override void OnStartServer()
     {
         // Initialise the ammo list
-        ammoList = new SyncListInt();
         for (int i = 0; i < NUMBER_OF_WEAPONS; i++)
         {
             ammoList.Add(0);
         }
 
-
         // Setup initial ammo
         ammoList[0] = 20;
     }
+
 
     public void ServerAddAmmo(int weaponIndex, int ammoAmount)
     {
