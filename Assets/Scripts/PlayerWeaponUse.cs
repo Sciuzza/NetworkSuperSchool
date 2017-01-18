@@ -96,18 +96,18 @@ public class PlayerWeaponUse : NetworkBehaviour
                 {
                     Debug.DrawLine(headTr.position, hit.point, Color.green, 1f);
                     ps.ServerTakeDamage(10);
-                    RpcShootFeedback(hit.point, Color.blue);
+                    RpcShootFeedback(hit.point, Color.green);
                 }
                 else
                 {
                     Debug.DrawLine(headTr.position, hit.point, Color.red, 1f);
-                    RpcShootFeedback(hit.point, Color.white);
+                    RpcShootFeedback(hit.point, Color.red);
                 }
       
              }
             else
             {
-                RpcShootFeedback(headTr.forward*100, Color.white);
+                RpcShootFeedback(headTr.forward*100, Color.red);
             }
         }
 
