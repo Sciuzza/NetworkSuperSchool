@@ -32,7 +32,7 @@ public class DamageArea : NetworkBehaviour
         PlayerState ps = coll.gameObject.GetComponent<PlayerState>();
         if (ps != null)
         {
-            ps.TakeDamage(damageOnEnter);
+            ps.ServerTakeDamage(damageOnEnter);
         }
     }
 

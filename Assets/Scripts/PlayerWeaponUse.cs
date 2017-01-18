@@ -30,7 +30,7 @@ public class PlayerWeaponUse : NetworkBehaviour
             if (ps != null)
             {
                 Debug.DrawLine(headTr.position, hit.point, Color.green, 1f);
-                ps.TakeDamage(10);
+                ps.ServerTakeDamage(10);
             }
             else
             {
