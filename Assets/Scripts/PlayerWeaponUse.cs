@@ -5,9 +5,54 @@ using System.Collections;
 public class PlayerWeaponUse : NetworkBehaviour
 {
     public Transform headTr;
-    public GameObject lineRenderer;
 
-	void Update ()
+
+    private const int NUMBER_OF_WEAPONS = 5;
+
+
+    // Synched on the server to clients
+    // -1 means infinite
+    // 0 cannot shoot
+    // >0 can shoot
+    public SyncListInt ammoList;
+
+    [SyncVar]
+    public int selectedWeaponIndex = 0;
+
+    public int CurrentWeaponAmmo
+    {
+        get { return ammoList[selectedWeaponIndex]; }
+    }
+
+
+    void Awake()
+    {
+        // Initialise the ammo list
+        ammoList = new SyncListInt();
+        for (int i = 0; i < NUMBER_OF_WEAPONS; i++)
+        {
+            ammoList.Add(0);
+        }
+
+
+        // Setup initial ammo
+        ammoList[0] = 20;
+    }
+
+    public void ServerAddAmmo(int weaponIndex, int ammoAmount)
+    {
+        if (!isServer)
+            return;
+
+        ammoList[weaponIndex] += ammoAmount;
+    }
+
+
+
+
+
+
+    void Update ()
     {
         if (isLocalPlayer)
         {
@@ -21,26 +66,51 @@ public class PlayerWeaponUse : NetworkBehaviour
     [Command]
     public void CmdShoot(Vector3 targetPosition)
     {
-        RaycastHit hit;
-        Vector3 direction = targetPosition - transform.position;
-        if(Physics.Raycast(headTr.position, direction, out hit))
+        // Check if we can shoot
+        bool canShoot = false;
+        if (ammoList[selectedWeaponIndex] == -1)
         {
-            GameObject hitGo = hit.collider.gameObject;
-            PlayerState ps = hitGo.GetComponent<PlayerState>();
-            if (ps == null && hitGo.transform.parent != null) ps = hitGo.transform.parent.GetComponent<PlayerState>();
-
-            if (ps != null)
-            {
-                Debug.DrawLine(headTr.position, hit.point, Color.green, 1f);
-                ps.ServerTakeDamage(10);
-            }
-            else
-            {
-                Debug.DrawLine(headTr.position, hit.point, Color.red, 1f);
-            }
-            RpcShootFeedback(hit.point);
+            canShoot = true;
         }
-    }  
+        else if (ammoList[selectedWeaponIndex] > 0)
+        {
+            ammoList[selectedWeaponIndex]--;
+            canShoot = true;
+        }
+
+        // If we can shoot, shoot
+        if (canShoot)
+        {
+            RaycastHit hit;
+            Vector3 direction = targetPosition - transform.position;
+            if(Physics.Raycast(headTr.position, direction, out hit))
+            {
+                GameObject hitGo = hit.collider.gameObject;
+                PlayerState ps = hitGo.GetComponent<PlayerState>();
+                if (ps == null && hitGo.transform.parent != null) ps = hitGo.transform.parent.GetComponent<PlayerState>();
+
+                if (ps != null)
+                {
+                    Debug.DrawLine(headTr.position, hit.point, Color.green, 1f);
+                    ps.ServerTakeDamage(10);
+                }
+                else
+                {
+                    Debug.DrawLine(headTr.position, hit.point, Color.red, 1f);
+                }
+                RpcShootFeedback(hit.point);
+             }
+        }
+
+    }
+
+
+
+
+
+
+
+    public GameObject lineRenderer;
 
     public IEnumerator DespawnShootFeedback(GameObject shootFeedback)
     {

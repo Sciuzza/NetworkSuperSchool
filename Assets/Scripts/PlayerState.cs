@@ -13,6 +13,12 @@ public class PlayerState : NetworkBehaviour
 
     Vector3 tempOutOfZonePos = new Vector3(1000, 1000, 1000);
 
+
+    public override void OnStartLocalPlayer()
+    {
+        FindObjectOfType<HealthUI>().ps = this;
+    }
+
     public void ServerTakeDamage(int dmg)
     {
         if (!isServer)
