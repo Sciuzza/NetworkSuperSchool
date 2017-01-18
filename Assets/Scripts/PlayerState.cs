@@ -63,8 +63,7 @@ public class PlayerState : NetworkBehaviour
         // Revive the player
         health = 100;
 
-
-        MovePlayerOutOfCombat(this.tempOutOfZonePos);
+        RpcMovePlayerOutOfCombat(this.tempOutOfZonePos);
 
         var timer = 0;
 
@@ -83,7 +82,7 @@ public class PlayerState : NetworkBehaviour
     }
 
     [ClientRpc]
-    public void MovePlayerOutOfCombat(Vector3 outOfCombatZonePos)
+    public void RpcMovePlayerOutOfCombat(Vector3 outOfCombatZonePos)
     {
         
         this.transform.position = outOfCombatZonePos;
