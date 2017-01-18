@@ -93,13 +93,19 @@ public class PlayerWeaponUse : NetworkBehaviour
                 {
                     Debug.DrawLine(headTr.position, hit.point, Color.green, 1f);
                     ps.ServerTakeDamage(10);
+                    RpcShootFeedback(hit.point, Color.blue);
                 }
                 else
                 {
                     Debug.DrawLine(headTr.position, hit.point, Color.red, 1f);
+                    RpcShootFeedback(hit.point, Color.white);
                 }
-                RpcShootFeedback(hit.point);
+      
              }
+            else
+            {
+                RpcShootFeedback(headTr.forward*100, Color.white);
+            }
         }
 
     }
@@ -119,11 +125,12 @@ public class PlayerWeaponUse : NetworkBehaviour
     }
 
     [ClientRpc]
-    public void RpcShootFeedback(Vector3 hitPoint)
+    public void RpcShootFeedback(Vector3 hitPoint, Color color)
     {
         GameObject shootSpawned = (GameObject)Instantiate(lineRenderer, headTr.position, Quaternion.identity);
         shootSpawned.GetComponent<LineRenderer>().SetPosition(0, headTr.position);
         shootSpawned.GetComponent<LineRenderer>().SetPosition(1, hitPoint);
+        shootSpawned.GetComponent<LineRenderer>().SetColors(color, color);
         StartCoroutine(DespawnShootFeedback(shootSpawned));
     }
 }
