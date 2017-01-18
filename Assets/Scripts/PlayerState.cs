@@ -12,6 +12,7 @@ public class PlayerState : NetworkBehaviour
     public float getBackToAction = 2;
 
     Vector3 tempOutOfZonePos = new Vector3(1000, 1000, 1000);
+    
 
     public void ServerTakeDamage(int dmg)
     {
@@ -65,10 +66,11 @@ public class PlayerState : NetworkBehaviour
 
         RpcMovePlayerOutOfCombat(this.tempOutOfZonePos);
 
-        var timer = 0;
+        var timer = 0.0f;
 
         while (timer < this.getBackToAction)
         {
+            timer += Time.deltaTime;
             yield return null;
         }
 
@@ -91,7 +93,8 @@ public class PlayerState : NetworkBehaviour
         GetComponent<PlayerMovement>().enabled = false;
         GetComponent<PlayerWeaponUse>().enabled = false;
         GetComponent<MeshRenderer>().material.color = Color.black;
-        GetComponentInChildren<MeshRenderer>().material.color = Color.black;
+        GameObject.FindGameObjectWithTag("Head").GetComponent<MeshRenderer>().material.color = Color.black;
+        
     }
 
 
@@ -104,7 +107,8 @@ public class PlayerState : NetworkBehaviour
         GetComponent<PlayerMovement>().enabled = true;
         GetComponent<PlayerWeaponUse>().enabled = true;
         GetComponent<MeshRenderer>().material.color = Color.white;
-        GetComponentInChildren<MeshRenderer>().material.color = Color.white;
+        GameObject.FindGameObjectWithTag("Head").GetComponent<MeshRenderer>().material.color = Color.white;
+
     }
   
 }
