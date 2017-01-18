@@ -3,6 +3,10 @@ using UnityEngine.Networking;
 
 public class PlayerMovement : NetworkBehaviour
 {
+    // Parameters
+    public float speed = 5;
+
+    // References
     public Transform headTr;
 
     public override void OnStartLocalPlayer()
@@ -10,14 +14,12 @@ public class PlayerMovement : NetworkBehaviour
         GetComponent<MeshRenderer>().material.color = Color.red;
     }
 
-    public float speed = 5;
-
 	void Update ()
     {
         if (isLocalPlayer)
         {
-            float dx = Input.GetAxis("Horizontal") * Time.deltaTime * speed;
-            float dz = Input.GetAxis("Vertical") * Time.deltaTime * speed;
+            float dx = Input.GetAxis("Horizontal");
+            float dz = Input.GetAxis("Vertical");
 
             Vector3 moveDir = headTr.forward;
             moveDir.y = 0;
@@ -27,8 +29,10 @@ public class PlayerMovement : NetworkBehaviour
             rightDir.y = 0;
             rightDir.Normalize();
 
-            transform.Translate(moveDir * dz);
-            transform.Translate(rightDir * dx);
+            Vector3 totalDir = moveDir * dz + rightDir * dx;
+            totalDir.Normalize();
+
+            transform.Translate(totalDir * Time.deltaTime * speed);
         } 
 
         if (isServer)

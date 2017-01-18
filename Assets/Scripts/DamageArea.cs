@@ -1,11 +1,15 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
 
+// @todo: this will not work correctly with a host
 public class DamageArea : NetworkBehaviour
 {
     public GameObject psGo;
     public BoxCollider boxColl;
     public MeshRenderer mr;
+
+    // Parameters
+    public int damageOnEnter = 10;
 
     public override void OnStartClient()
     {
@@ -20,8 +24,6 @@ public class DamageArea : NetworkBehaviour
         Destroy(psGo);
     }
 
-
-
     void OnTriggerEnter(Collider coll)
     {
         if (!isServer)
@@ -30,7 +32,7 @@ public class DamageArea : NetworkBehaviour
         PlayerState ps = coll.gameObject.GetComponent<PlayerState>();
         if (ps != null)
         {
-            ps.TakeDamage(10);
+            ps.TakeDamage(damageOnEnter);
         }
     }
 
