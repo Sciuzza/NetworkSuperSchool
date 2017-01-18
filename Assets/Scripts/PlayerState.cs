@@ -47,6 +47,7 @@ public class PlayerState : NetworkBehaviour
         GetComponent<PlayerMovement>().enabled = false;
         GetComponent<PlayerWeaponUse>().enabled = false;
         GetComponent<MeshRenderer>().material.color = Color.black;
+        GetComponentInChildren<MeshRenderer>().material.color = Color.black;
     }
 
     [ClientRpc]
@@ -58,6 +59,7 @@ public class PlayerState : NetworkBehaviour
         GetComponent<PlayerMovement>().enabled = true;
         GetComponent<PlayerWeaponUse>().enabled = true;
         GetComponent<MeshRenderer>().material.color = Color.white;
+        GetComponentInChildren<MeshRenderer>().material.color = Color.white;
     }
 
 }
