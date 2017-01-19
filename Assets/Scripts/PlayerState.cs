@@ -45,7 +45,7 @@ public class PlayerState : NetworkBehaviour
         health = 100;
     }
 
-    public void ServerTakeDamage(int dmg)
+    public void ServerTakeDamage(int dmg, short playerID)
     {
         if (!isServer)
             return;
@@ -56,7 +56,7 @@ public class PlayerState : NetworkBehaviour
 
         if (health <= 0)
         {
-            ServerKillPlayer();
+            ServerKillPlayer(playerID);
         }
     }
 
@@ -66,9 +66,18 @@ public class PlayerState : NetworkBehaviour
     }
 
 
-    private void ServerKillPlayer()
+    private void ServerKillPlayer(short playerID)
     {
         // Notify the clients that the player is dead
+        if (playerID == MyNetworkLobbyManager.SERVER_PLAYER_ID)
+        {
+            GetComponent<PlayerScore>().ChangeScore(-1);
+        }
+        else
+        {
+            GetComponent<PlayerScore>().ChangeScore(1);
+        }
+
         RpcKillPlayer();
 
         StartCoroutine(this.PlayerDyingTime());

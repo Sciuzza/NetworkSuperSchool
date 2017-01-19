@@ -18,8 +18,11 @@ public class PlayerName : NetworkBehaviour
         {
             this.gameObject.name = playerName;
 
-            var ifield = FindObjectOfType<UnityEngine.UI.InputField>();
-            ifield.onEndEdit.AddListener(ChangeFace);
+            var nameField = FindObjectOfType<LobbyPlayerNameInputField>();
+            if (nameField) nameField.GetComponent<UnityEngine.UI.InputField>().onEndEdit.AddListener(ChangeName);
+
+            var faceField = FindObjectOfType<LobbyPlayerFaceInputField>();
+            if (faceField) faceField.GetComponent<UnityEngine.UI.InputField>().onEndEdit.AddListener(ChangeFace);
         }
     }
 	
