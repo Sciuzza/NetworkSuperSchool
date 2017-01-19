@@ -17,14 +17,18 @@ public class GameController : NetworkBehaviour {
 
 	//Number of teams, with total score inside each box
 	public List <int> m_TotalTeamScoreList;
-	#endregion
+
+    public List<PlayerScore> m_RedTeamMembers, m_BlueTeamMembers;
+
+    #endregion
 
 
-	#region GAME_CONTROLLER_MONO_BEHAVIOUR_METHODS
-	[Server] //This is executed only by server
+    #region GAME_CONTROLLER_MONO_BEHAVIOUR_METHODS
+    [Server] //This is executed only by server
 	private void Awake () {
-
-		this.m_TotalTeamScoreList = new List <int> ();
+        this.m_RedTeamMembers = new List<PlayerScore>();
+        this.m_BlueTeamMembers = new List<PlayerScore>();
+        this.m_TotalTeamScoreList = new List <int> ();
 
 	}
 	#endregion
