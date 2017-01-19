@@ -2,13 +2,15 @@
 using UnityEngine.Networking;
 using System.Collections;
 
-public class PlayerScore: MonoBehaviour
+public class PlayerScore: NetworkBehaviour
 {
     [SyncVar]
-    public int playerPersonalScore = 0;
-    public int playerTeam = 0;
+    public short playerPersonalScore = 0;
+    [SyncVar]
+    public short playerTeam = 0;
 
     private GameController gc;
+
     void Start()
     {
         gc = FindObjectOfType<GameController>();

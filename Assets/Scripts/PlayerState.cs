@@ -5,6 +5,8 @@ using UnityEngine.Networking;
 
 public class PlayerState : NetworkBehaviour
 {
+    public GameObject face;
+
     [SyncVar]
     public int health = 100;
 
@@ -30,6 +32,8 @@ public class PlayerState : NetworkBehaviour
     public override void OnStartLocalPlayer()
     {
         FindObjectOfType<HealthUI>().ps = this;
+        face.gameObject.SetActive(false);
+        
     }
 
 
@@ -65,7 +69,7 @@ public class PlayerState : NetworkBehaviour
     private void ServerKillPlayer(short playerID)
     {
         // Notify the clients that the player is dead
-        if (playerID == MyNetworkLobbyManager.SERVER_PLAYER_ID)
+        if (playerID == MyLobbyNetworkManager.SERVER_PLAYER_ID)
         {
             GetComponent<PlayerScore>().ChangeScore(-1);
         }
@@ -98,6 +102,7 @@ public class PlayerState : NetworkBehaviour
         {
             timer += Time.deltaTime;
             yield return null;
+
         }
 
         // Respawn a few seconds later

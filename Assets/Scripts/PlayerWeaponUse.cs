@@ -4,7 +4,8 @@ using System.Collections;
 
 public class PlayerWeaponUse : NetworkBehaviour
 {
-    public Transform headTr;
+    public Transform weaponTr;
+    const float WEAPON_RANGE = 100;
 
 
     private const int NUMBER_OF_WEAPONS = 5;
@@ -65,7 +66,7 @@ public class PlayerWeaponUse : NetworkBehaviour
         {
             if (Input.GetMouseButtonDown(0))
             {
-                CmdShoot(headTr.position + headTr.forward*100);
+                CmdShoot(weaponTr.position + weaponTr.forward*100);
             }
         }
     }
@@ -89,29 +90,31 @@ public class PlayerWeaponUse : NetworkBehaviour
         if (canShoot)
         {
             RaycastHit hit;
-            Vector3 direction = targetPosition - transform.position;
-            if(Physics.Raycast(headTr.position, direction, out hit))
+            Vector3 direction = targetPosition - weaponTr.transform.position;
+            if(Physics.Raycast(weaponTr.position, direction, out hit,WEAPON_RANGE))
             {
                 GameObject hitGo = hit.collider.gameObject;
                 PlayerState ps = hitGo.GetComponent<PlayerState>();
                 if (ps == null && hitGo.transform.parent != null) ps = hitGo.transform.parent.GetComponent<PlayerState>();
 
                 if (ps != null)
-                {
-                    Debug.DrawLine(headTr.position, hit.point, Color.green, 1f);
+                { 
+                    Debug.DrawLine(weaponTr.position, hit.point, Color.green, 1f);
                     ps.ServerTakeDamage(10, playerControllerId);
+
                     RpcShootFeedback(hit.point, Color.green);
                 }
                 else
                 {
-                    Debug.DrawLine(headTr.position, hit.point, Color.red, 1f);
+                    Debug.DrawLine(weaponTr.position, hit.point, Color.red, 1f);
                     RpcShootFeedback(hit.point, Color.red);
                 }
       
              }
             else
             {
-                RpcShootFeedback(headTr.forward*100, Color.red);
+                RpcShootFeedback(weaponTr.position + direction*WEAPON_RANGE, Color.red);
+
             }
         }
 
@@ -134,8 +137,8 @@ public class PlayerWeaponUse : NetworkBehaviour
     [ClientRpc]
     public void RpcShootFeedback(Vector3 hitPoint, Color color)
     {
-        GameObject shootSpawned = (GameObject)Instantiate(lineRenderer, headTr.position, Quaternion.identity);
-        shootSpawned.GetComponent<LineRenderer>().SetPosition(0, headTr.position + new Vector3(0,-0.3f,0));
+        GameObject shootSpawned = (GameObject)Instantiate(lineRenderer, weaponTr.position, Quaternion.identity);
+        shootSpawned.GetComponent<LineRenderer>().SetPosition(0, weaponTr.position);
         shootSpawned.GetComponent<LineRenderer>().SetPosition(1, hitPoint);
         shootSpawned.GetComponent<LineRenderer>().SetColors(color, color);
         StartCoroutine(DespawnShootFeedback(shootSpawned));

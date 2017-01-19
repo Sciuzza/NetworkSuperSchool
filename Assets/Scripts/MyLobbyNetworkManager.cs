@@ -3,6 +3,7 @@ using UnityEngine.Networking;
 
 public class MyLobbyNetworkManager : NetworkLobbyManager
 {
+    public const short SERVER_PLAYER_ID = 255;
 
     // we need to override this to avoid the manager changing scene automatically
     public override void OnLobbyServerPlayersReady()
