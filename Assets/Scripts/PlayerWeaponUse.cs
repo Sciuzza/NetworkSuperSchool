@@ -38,7 +38,7 @@ public class PlayerWeaponUse : NetworkBehaviour
         }
 
         // Setup initial ammo
-        ammoList[0] = 20;
+        ServerRefillAmmo();
     }
 
 
@@ -50,6 +50,10 @@ public class PlayerWeaponUse : NetworkBehaviour
         ammoList[weaponIndex] += ammoAmount;
     }
 
+    public void ServerRefillAmmo()
+    {
+        ammoList[0] = 20;
+    }
 
 
 

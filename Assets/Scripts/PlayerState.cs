@@ -12,12 +12,23 @@ public class PlayerState : NetworkBehaviour
     public float getBackToAction = 2;
 
     Vector3 tempOutOfZonePos = new Vector3(1000, 1000, 1000);
-    
+
+
+    public override void OnStartServer()
+    {
+        ServerRefillHealth();
+    }
 
 
     public override void OnStartLocalPlayer()
     {
         FindObjectOfType<HealthUI>().ps = this;
+    }
+
+
+    public void ServerRefillHealth()
+    {
+        health = 100;
     }
 
     public void ServerTakeDamage(int dmg)
@@ -49,6 +60,7 @@ public class PlayerState : NetworkBehaviour
         GetComponent<PlayerMovement>().enabled = false;
         GetComponent<PlayerWeaponUse>().enabled = false;
         GetComponent<MeshRenderer>().material.color = Color.black;
+        GameObject.FindGameObjectWithTag("Head").GetComponent<MeshRenderer>().material.color = Color.black;
     }
 
     private IEnumerator PlayerDyingTime()
@@ -68,7 +80,9 @@ public class PlayerState : NetworkBehaviour
     private IEnumerator ServerRespawn()
     {
         // Revive the player
-        health = 100;
+        ServerRefillHealth();
+        GetComponent<PlayerWeaponUse>().ServerRefillAmmo();
+
 
         RpcMovePlayerOutOfCombat(this.tempOutOfZonePos);
 
@@ -92,15 +106,7 @@ public class PlayerState : NetworkBehaviour
     [ClientRpc]
     public void RpcMovePlayerOutOfCombat(Vector3 outOfCombatZonePos)
     {
-        
         this.transform.position = outOfCombatZonePos;
-        // Disable the player 
-
-        GetComponent<PlayerMovement>().enabled = false;
-        GetComponent<PlayerWeaponUse>().enabled = false;
-        GetComponent<MeshRenderer>().material.color = Color.black;
-        GameObject.FindGameObjectWithTag("Head").GetComponent<MeshRenderer>().material.color = Color.black;
-        
     }
 
 
