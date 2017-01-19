@@ -131,7 +131,7 @@ public class PlayerWeaponUse : NetworkBehaviour
     public void RpcShootFeedback(Vector3 hitPoint, Color color)
     {
         GameObject shootSpawned = (GameObject)Instantiate(lineRenderer, headTr.position, Quaternion.identity);
-        shootSpawned.GetComponent<LineRenderer>().SetPosition(0, headTr.position);
+        shootSpawned.GetComponent<LineRenderer>().SetPosition(0, headTr.position + new Vector3(0,-0.3f,0));
         shootSpawned.GetComponent<LineRenderer>().SetPosition(1, hitPoint);
         shootSpawned.GetComponent<LineRenderer>().SetColors(color, color);
         StartCoroutine(DespawnShootFeedback(shootSpawned));
