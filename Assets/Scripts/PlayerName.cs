@@ -6,22 +6,27 @@ public class PlayerName : NetworkBehaviour
     [SyncVar]
     public string playerName = "PIPPO";
 
-    private TextMesh textMesh;
+    [SyncVar]
+    public string playerFace = "O_O";
 
-	void Start ()
+    public TextMesh textName;
+    public TextMesh textFace;
+
+    void Start ()
     {
-        textMesh = GetComponentInChildren<TextMesh>();
-     
         if (isLocalPlayer)
         {
+            this.gameObject.name = playerName;
+
             var ifield = FindObjectOfType<UnityEngine.UI.InputField>();
-            ifield.onEndEdit.AddListener(ChangeName);
+            ifield.onEndEdit.AddListener(ChangeFace);
         }
     }
 	
     void Update()
     {
-        textMesh.text = playerName;
+        textName.text = playerName;
+        textFace.text = playerFace;
     }
 
     public void ChangeName(string newName)
@@ -32,11 +37,24 @@ public class PlayerName : NetworkBehaviour
         }
     }
 
+    public void ChangeFace(string newFace)
+    {
+        if (isLocalPlayer)
+        {
+            CmdChangeFace(newFace);
+        }
+    }
+
     [Command]
     public void CmdChangeName(string newName)
     {
         this.playerName = newName;
     }
 
+    [Command]
+    public void CmdChangeFace(string newFace)
+    {
+        this.playerFace = newFace;
+    }
 
 }
