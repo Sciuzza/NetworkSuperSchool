@@ -35,19 +35,8 @@ public class LobbyPlayer : NetworkLobbyPlayer
                 //this.readyToBegin = !readyToBegin;
             }
 
-            this.playerName = playerNameComp.name;
-
-            if (Input.GetKeyDown(KeyCode.C))
-            {
-                color = Color.green;
-            }
-
-            if (Input.GetKeyDown(KeyCode.T))
-            {
-                teamId = teamId + 1;
-                if (teamId == 2) teamId = 0;
-            }
-
+            this.playerName = playerNameComp.playerName;
+            this.playerFace = playerNameComp.playerFace;
         }
     }
 
