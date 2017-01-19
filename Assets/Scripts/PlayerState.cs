@@ -5,6 +5,8 @@ using UnityEngine.Networking;
 
 public class PlayerState : NetworkBehaviour
 {
+    public GameObject face;
+
     [SyncVar]
     public int health = 100;
 
@@ -30,6 +32,8 @@ public class PlayerState : NetworkBehaviour
     public override void OnStartLocalPlayer()
     {
         FindObjectOfType<HealthUI>().ps = this;
+        face.gameObject.SetActive(false);
+        
     }
 
 
@@ -89,6 +93,7 @@ public class PlayerState : NetworkBehaviour
         {
             timer += Time.deltaTime;
             yield return null;
+
         }
 
         // Respawn a few seconds later
