@@ -13,17 +13,27 @@ public class PlayerState : NetworkBehaviour
 
     Vector3 tempOutOfZonePos = new Vector3(1000, 1000, 1000);
 
+    [SyncEvent]
+    public event System.Action EventOnDamageTaken;
+
 
     public override void OnStartServer()
     {
         ServerRefillHealth();
     }
 
+    public override void OnStartClient()
+    {
+        EventOnDamageTaken += ClientTakeDamage;
+    }
 
     public override void OnStartLocalPlayer()
     {
         FindObjectOfType<HealthUI>().ps = this;
     }
+
+
+
 
 
     public void ServerRefillHealth()
@@ -38,11 +48,19 @@ public class PlayerState : NetworkBehaviour
 
         health -= dmg;
 
+        EventOnDamageTaken();
+
         if (health <= 0)
         {
             ServerKillPlayer();
         }
     }
+
+    public void ClientTakeDamage()  // called through EventOnDamageTaken()
+    {
+        GetComponent<AudioSource>().Play();
+    }
+
 
     private void ServerKillPlayer()
     {
@@ -50,8 +68,8 @@ public class PlayerState : NetworkBehaviour
         RpcKillPlayer();
 
         StartCoroutine(this.PlayerDyingTime());
-
     }
+    
 
     [ClientRpc]
     public void RpcKillPlayer()
