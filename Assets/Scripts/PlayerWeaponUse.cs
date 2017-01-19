@@ -99,7 +99,7 @@ public class PlayerWeaponUse : NetworkBehaviour
                 if (ps != null)
                 {
                     Debug.DrawLine(headTr.position, hit.point, Color.green, 1f);
-                    ps.ServerTakeDamage(10);
+                    ps.ServerTakeDamage(10, playerControllerId);
                     RpcShootFeedback(hit.point, Color.green);
                 }
                 else
