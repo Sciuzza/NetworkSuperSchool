@@ -2,6 +2,11 @@
 using System.Collections;
 using UnityEngine.Networking;
 
+public class Test : NetworkLobbyManager
+{
+
+}
+
 public class MyNetworkManager : NetworkManager
 {
     public void Awake()
