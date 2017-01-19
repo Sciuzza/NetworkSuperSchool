@@ -1,9 +1,22 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Networking;
 
 public class LobbyPlayer : NetworkLobbyPlayer
 {
+    [SyncVar]
+    public string playerName = "New player";
+
+    [SyncVar]
+    public int teamId = 0;
+
+    [SyncVar]
+    public Color color = Color.white;
+
+    [SyncVar]
+    public string playerFace = "o_o";
+
+
+    public PlayerName playerNameComp;
 
     public void Update()
     {
@@ -21,6 +34,21 @@ public class LobbyPlayer : NetworkLobbyPlayer
                 }
                 //this.readyToBegin = !readyToBegin;
             }
+
+            this.playerName = playerNameComp.name;
+
+            if (Input.GetKeyDown(KeyCode.C))
+            {
+                color = Color.green;
+            }
+
+            if (Input.GetKeyDown(KeyCode.T))
+            {
+                teamId = teamId + 1;
+                if (teamId == 2) teamId = 0;
+            }
+
         }
     }
+
 }

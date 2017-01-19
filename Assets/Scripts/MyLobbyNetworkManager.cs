@@ -10,6 +10,12 @@ public class MyLobbyNetworkManager : NetworkLobbyManager
         Debug.Log("ALL READY");
     }
 
+    public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId)
+    {
+        base.OnServerAddPlayer(conn, playerControllerId);
+        conn.playerControllers[0].gameObject.transform.position = Random.onUnitSphere * 4;
+    }
+
     void OnGUI()
     {
         // Check if everyone is ready
@@ -31,6 +37,19 @@ public class MyLobbyNetworkManager : NetworkLobbyManager
                 ServerChangeScene(playScene);
             }
         }
+
+    }
+
+
+    // Called when switching from the lobby scene to the game scene
+    public override bool OnLobbyServerSceneLoadedForPlayer(GameObject lobbyPlayer, GameObject gamePlayer)
+    {
+        var lobbyScript = lobbyPlayer.GetComponent<LobbyPlayer>();
+        var gameScript = gamePlayer.GetComponent<PlayerName>();
+        gameScript.playerName = lobbyScript.playerName;
+        gameScript.playerFace = lobbyScript.playerFace;
+        Debug.Log("Set player name: " + lobbyScript.playerName);
+        return true;
     }
 
 }
