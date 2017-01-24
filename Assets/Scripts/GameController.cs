@@ -22,19 +22,6 @@ public class GameController : NetworkBehaviour {
 
     #endregion
 
-    public string GetPlayerNameById(short playerId)
-    {
-        if (m_RedTeamMembers.Find(x => x.playerControllerId == playerId) != null)
-        {
-            return m_RedTeamMembers.Find(x => x.playerControllerId == playerId).playerName;
-        }
-        else if (m_BlueTeamMembers.Find(x => x.playerControllerId == playerId) != null)
-        {
-            return m_BlueTeamMembers.Find(x => x.playerControllerId == playerId).playerName;
-        }
-        return null;
-    }
-
     public PlayerScore GetPlayerScoreById(short playerId)
     {
         if (m_RedTeamMembers.Find(x => x.playerControllerId == playerId) != null)
