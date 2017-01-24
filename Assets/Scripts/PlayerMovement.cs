@@ -25,8 +25,7 @@ public class PlayerMovement : NetworkBehaviour
         if (isLocalPlayer)
             rb = GetComponent<Rigidbody>();
             rb.isKinematic = false;
-
-
+        
         this.GetComponent<MeshRenderer>().material.color = Color.red;
     }
 
@@ -82,7 +81,7 @@ public class PlayerMovement : NetworkBehaviour
 
     private void OnCollisionEnter(Collision _other)
     {
-        if (_other.transform.CompareTag("Terrain"))
+        if (_other.gameObject.CompareTag("Terrain"))
             isJumping = false;
     }
 }
