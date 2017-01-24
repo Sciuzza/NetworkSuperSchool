@@ -79,56 +79,28 @@ public class GameController : NetworkBehaviour {
 
 
 	[Server] //This is executed only by server
-	public void ChangeTeamScore (short score, short team) {
-
-		/*for (int i = 0; i <= m_NumberOfTeams; i++) {
-			
-			if (i == team) {
-				
-				this.m_TotalTeamScoreList [i] += score;
-				this.EndGameCheck ();
-				return;
-				
-			}
-			
-		}
-
-		Debug.LogError (this.ToString () + ": Game Controller cannot select a team while attempting specific total team score variation!");*/
-
-		switch (team) {
-
-		case 0:
-			this.m_TotalTeamScoreList [0] += score;
-			break;
-
-		case 1:
-			this.m_TotalTeamScoreList [1] += score;
-			break;
-
-		case 2:
-			this.m_TotalTeamScoreList [2] += score;
-			break;
-
-		case 3:
-			this.m_TotalTeamScoreList [3] += score;
-			break;
-
-		default:
-			Debug.LogError (this.ToString () + ": Game Controller cannot select a team while attempting specific total team score variation!");
-			break;
-
-		}
+	public void ChangeTeamScore (short score, short team)
+    {
+		this.m_TotalTeamScoreList [team] += score;
 
 		this.EndGameCheck ();
-
 	}
 
 
 	public void EndGameCheck () {
 
-
-
+        foreach (var totScore in m_TotalTeamScoreList)
+        {
+            if (totScore >= m_MaxDeathMatchScore)
+            {
+                ReturnToLobby();
+            }
+        }
 	}
-	#endregion
 
+    public void ReturnToLobby()
+    {
+        FindObjectOfType<MyLobbyNetworkManager>().ServerReturnToLobby();
+    }
+	#endregion
 }

@@ -17,11 +17,7 @@ public class ScorePanelUI : MonoBehaviour
 
     void Start()
     {
-        for (int i = 0; i < gc.; i++)
-        {
-
-        }
-        redTeamGameObjects.Add()
+      
     }
 
     void Update()
