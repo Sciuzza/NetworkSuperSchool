@@ -5,17 +5,21 @@ public class PlayerMovement : NetworkBehaviour
 {
     // Parameters
     public float speed = 3;
-
-    bool isJumping;
-
+    private bool isJumping;
+    
     // References
     public Transform headTr;
-    public Rigidbody rb;
+    private Rigidbody rb;
 
     // Input
     private float dx, dz;
     private Vector3 moveDir, rightDir, totalDir;
     
+    private void Awake()
+    {
+        rb = this.GetComponent<Rigidbody>();
+    }
+
     public override void OnStartLocalPlayer()
     {
         if (isLocalPlayer)
@@ -39,10 +43,21 @@ public class PlayerMovement : NetworkBehaviour
     {
         if (isLocalPlayer)
         {
+            #region Input
+
             dx = Input.GetAxis("Horizontal");
             dz = Input.GetAxis("Vertical");
-            
-            #region Direction
+
+            if (Input.GetKeyDown(KeyCode.Space) && !isJumping)
+            {
+                rb.AddForce(0, 20, 0, ForceMode.Impulse);
+                isJumping = true;
+            }
+
+            #endregion
+
+            #region Movement
+
             moveDir = headTr.forward;
             moveDir.y = 0;
             moveDir.Normalize();
@@ -51,32 +66,21 @@ public class PlayerMovement : NetworkBehaviour
             rightDir.y = 0;
             rightDir.Normalize();
 
-            totalDir = moveDir * dz * 10 + rightDir * dx * 10;
+            totalDir = moveDir * dz * 20 + rightDir * dx * 20;
             totalDir.Normalize();
-            #endregion
-            
-            if (Input.GetKeyDown(KeyCode.Space) && !isJumping)
-            {
-                rb.AddForce(0, 20, 0, ForceMode.Impulse);
-                isJumping = true;
-            }
-                
+
             if (totalDir.sqrMagnitude == 0)
-            {
                 rb.velocity += new Vector3(0, totalDir.y, 0);
-            }
             else if (!isJumping)
-            {
                 rb.velocity = totalDir * 20;
-            }
+
+            #endregion
         }
     }
 
     private void OnCollisionEnter(Collision _other)
     {
         if (_other.transform.CompareTag("Terrain"))
-        {
             isJumping = false;
-        }
     }
 }
