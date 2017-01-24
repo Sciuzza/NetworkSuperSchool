@@ -25,8 +25,7 @@ public class PlayerMovement : NetworkBehaviour
         if (isLocalPlayer)
             rb = GetComponent<Rigidbody>();
             rb.isKinematic = false;
-
-
+        
         this.GetComponent<MeshRenderer>().material.color = Color.red;
     }
 
