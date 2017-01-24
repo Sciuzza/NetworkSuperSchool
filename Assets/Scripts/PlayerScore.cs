@@ -31,6 +31,7 @@ public class PlayerScore : NetworkBehaviour
         }
     }
 
+
 	public void ChangeScore (short value)
     {
         playerPersonalScore += value;

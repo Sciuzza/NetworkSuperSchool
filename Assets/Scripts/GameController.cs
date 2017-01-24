@@ -10,25 +10,30 @@ public class GameController : NetworkBehaviour {
 	public int m_GameModality = 0;
 
 	// 1 - 4
-	public int m_NumberOfTeams = 0;
+	private int m_NumberOfTeams = 2;
 
 	//Number of Max Score for DeathMatch and Team DeathMatch modalities
 	public int m_MaxDeathMatchScore = 40;
 
 	//Number of teams, with total score inside each box
-	public List <int> m_TotalTeamScoreList;
+	public SyncListInt m_TotalTeamScoreList;
 
     public List<PlayerScore> m_RedTeamMembers, m_BlueTeamMembers;
 
     #endregion
 
+    public PlayerScore GetPlayerScoreById(short playerId)
+    {
+        return m_RedTeamMembers.Find(x => x.playerControllerId == playerId);       
+    }
 
     #region GAME_CONTROLLER_MONO_BEHAVIOUR_METHODS
     [Server] //This is executed only by server
 	private void Awake () {
         this.m_RedTeamMembers = new List<PlayerScore>();
         this.m_BlueTeamMembers = new List<PlayerScore>();
-        this.m_TotalTeamScoreList = new List <int> ();
+        this.m_TotalTeamScoreList = new SyncListInt ();
+        InitializeTeams(m_NumberOfTeams);
 
 	}
 	#endregion
@@ -64,7 +69,7 @@ public class GameController : NetworkBehaviour {
 
 			Debug.LogWarning (this.ToString () + ": Game Controller has forced the initialization of the <<TotalTeamScoreList>>");
 
-			this.m_TotalTeamScoreList = new List <int> ();
+			this.m_TotalTeamScoreList = new SyncListInt();
 
 			do {
 
