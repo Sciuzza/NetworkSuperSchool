@@ -32,9 +32,10 @@ public class PlayerScore : NetworkBehaviour
         {
             gc.m_BlueTeamMembers.Add(this);       
         }
+        FindObjectOfType<ScorePanelUI>().InitializeScoreUI();
     }
 
-
+    [Server]
 	public void ChangeScore (short value)
     {
         playerPersonalScore += value;

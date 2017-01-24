@@ -41,9 +41,11 @@ public class GameController : NetworkBehaviour {
 
         this.m_RedTeamMembers = new List<PlayerScore>();
         this.m_BlueTeamMembers = new List<PlayerScore>();
-  
-       // InitializeTeams(m_NumberOfTeams);
-	}
+        this.m_TotalTeamScoreList.Add(0);
+        this.m_TotalTeamScoreList.Add(0);
+
+        // InitializeTeams(m_NumberOfTeams);
+    }
 	#endregion
 
 
