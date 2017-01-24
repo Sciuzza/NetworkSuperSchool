@@ -16,7 +16,7 @@ public class GameController : NetworkBehaviour {
 	public int m_MaxDeathMatchScore = 40;
 
 	//Number of teams, with total score inside each box
-	public SyncListInt m_TotalTeamScoreList;
+	public SyncListInt m_TotalTeamScoreList = new SyncListInt();
 
     public List<PlayerScore> m_RedTeamMembers, m_BlueTeamMembers;
 
@@ -53,9 +53,7 @@ public class GameController : NetworkBehaviour {
 	private void Awake () {
         this.m_RedTeamMembers = new List<PlayerScore>();
         this.m_BlueTeamMembers = new List<PlayerScore>();
-        this.m_TotalTeamScoreList = new SyncListInt ();
         InitializeTeams(m_NumberOfTeams);
-
 	}
 	#endregion
 
