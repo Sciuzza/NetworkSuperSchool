@@ -10,25 +10,30 @@ public class GameController : NetworkBehaviour {
 	public int m_GameModality = 0;
 
 	// 1 - 4
-	public int m_NumberOfTeams = 0;
+	private int m_NumberOfTeams = 2;
 
 	//Number of Max Score for DeathMatch and Team DeathMatch modalities
 	public int m_MaxDeathMatchScore = 40;
 
 	//Number of teams, with total score inside each box
-	public List <int> m_TotalTeamScoreList;
+	public SyncListInt m_TotalTeamScoreList;
 
     public List<PlayerScore> m_RedTeamMembers, m_BlueTeamMembers;
 
     #endregion
 
+    public PlayerScore GetPlayerScoreById(short playerId)
+    {
+        return m_RedTeamMembers.Find(x => x.playerControllerId == playerId);       
+    }
 
     #region GAME_CONTROLLER_MONO_BEHAVIOUR_METHODS
     [Server] //This is executed only by server
 	private void Awake () {
         this.m_RedTeamMembers = new List<PlayerScore>();
         this.m_BlueTeamMembers = new List<PlayerScore>();
-        this.m_TotalTeamScoreList = new List <int> ();
+        this.m_TotalTeamScoreList = new SyncListInt ();
+        InitializeTeams(m_NumberOfTeams);
 
 	}
 	#endregion
@@ -64,7 +69,7 @@ public class GameController : NetworkBehaviour {
 
 			Debug.LogWarning (this.ToString () + ": Game Controller has forced the initialization of the <<TotalTeamScoreList>>");
 
-			this.m_TotalTeamScoreList = new List <int> ();
+			this.m_TotalTeamScoreList = new SyncListInt();
 
 			do {
 
@@ -79,56 +84,28 @@ public class GameController : NetworkBehaviour {
 
 
 	[Server] //This is executed only by server
-	public void ChangeTeamScore (short score, short team) {
-
-		/*for (int i = 0; i <= m_NumberOfTeams; i++) {
-			
-			if (i == team) {
-				
-				this.m_TotalTeamScoreList [i] += score;
-				this.EndGameCheck ();
-				return;
-				
-			}
-			
-		}
-
-		Debug.LogError (this.ToString () + ": Game Controller cannot select a team while attempting specific total team score variation!");*/
-
-		switch (team) {
-
-		case 0:
-			this.m_TotalTeamScoreList [0] += score;
-			break;
-
-		case 1:
-			this.m_TotalTeamScoreList [1] += score;
-			break;
-
-		case 2:
-			this.m_TotalTeamScoreList [2] += score;
-			break;
-
-		case 3:
-			this.m_TotalTeamScoreList [3] += score;
-			break;
-
-		default:
-			Debug.LogError (this.ToString () + ": Game Controller cannot select a team while attempting specific total team score variation!");
-			break;
-
-		}
+	public void ChangeTeamScore (short score, short team)
+    {
+		this.m_TotalTeamScoreList [team] += score;
 
 		this.EndGameCheck ();
-
 	}
 
 
 	public void EndGameCheck () {
 
-
-
+        foreach (var totScore in m_TotalTeamScoreList)
+        {
+            if (totScore >= m_MaxDeathMatchScore)
+            {
+                ReturnToLobby();
+            }
+        }
 	}
-	#endregion
 
+    public void ReturnToLobby()
+    {
+        FindObjectOfType<MyLobbyNetworkManager>().ServerReturnToLobby();
+    }
+	#endregion
 }

@@ -11,10 +11,26 @@ public class PlayerScore : NetworkBehaviour
 
     private GameController gc;
 
-    void Start()
+    override public void OnStartServer()
     {
         gc = FindObjectOfType<GameController>();
+        playerTeam = (short)Mathf.RoundToInt(Random.Range(0f, 1f));
+        AssignToList();
     }
+
+    [Server]
+    void AssignToList()
+    {
+        if (playerTeam == 0)
+        {
+            gc.m_RedTeamMembers.Add(this);
+        }
+        else if (playerTeam == 1)
+        {
+            gc.m_BlueTeamMembers.Add(this);       
+        }
+    }
+
 
 	public void ChangeScore (short value)
     {

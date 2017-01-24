@@ -6,6 +6,7 @@ using UnityEngine.Networking;
 public class PlayerState : NetworkBehaviour
 {
     public GameObject face;
+    private GameController gc;
 
     [SyncVar]
     public int health = 100;
@@ -22,6 +23,7 @@ public class PlayerState : NetworkBehaviour
     public override void OnStartServer()
     {
         ServerRefillHealth();
+        gc = FindObjectOfType<GameController>();
     }
 
     public override void OnStartClient()
@@ -45,7 +47,7 @@ public class PlayerState : NetworkBehaviour
         health = 100;
     }
 
-    public void ServerTakeDamage(int dmg, short playerID)
+    public void ServerTakeDamage(int dmg, short hittingPlayerId)
     {
         if (!isServer)
             return;
@@ -56,7 +58,7 @@ public class PlayerState : NetworkBehaviour
 
         if (health <= 0)
         {
-            ServerKillPlayer(playerID);
+            ServerKillPlayer(hittingPlayerId);
         }
     }
 
@@ -66,16 +68,16 @@ public class PlayerState : NetworkBehaviour
     }
 
 
-    private void ServerKillPlayer(short playerID)
+    private void ServerKillPlayer(short hittingPlayerId)
     {
         // Notify the clients that the player is dead
-        if (playerID == MyLobbyNetworkManager.SERVER_PLAYER_ID)
+        if (hittingPlayerId == MyLobbyNetworkManager.SERVER_PLAYER_ID)
         {
             GetComponent<PlayerScore>().ChangeScore(-1);
         }
         else
         {
-            GetComponent<PlayerScore>().ChangeScore(1);
+            gc.GetPlayerScoreById(hittingPlayerId).ChangeScore(1);
         }
 
         RpcKillPlayer();

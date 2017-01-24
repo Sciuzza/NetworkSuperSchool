@@ -5,7 +5,7 @@ public class LobbyScore: NetworkBehaviour
     [SyncVar]
     public short playerTeam = 0;
 
-    void OnStartLocalPlayer()
+    public override void OnStartLocalPlayer()
     {
         var teamToggles = FindObjectsOfType<LobbyPlayerTeamToggle>();
         foreach(var toggl in teamToggles)
