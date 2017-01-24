@@ -11,8 +11,7 @@ public class PlayerScore : NetworkBehaviour
 
     private GameController gc;
 
-    [Server]
-    void Start()
+    override public void OnStartServer()
     {
         gc = FindObjectOfType<GameController>();
         playerTeam = (short)Mathf.RoundToInt(Random.Range(0f, 1f));
