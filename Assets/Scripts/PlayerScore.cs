@@ -8,13 +8,17 @@ public class PlayerScore : NetworkBehaviour
     public short playerPersonalScore = 0;
     [SyncVar]
     public short playerTeam = 0;
+    [SyncVar]
+    public string playerName;
 
     private GameController gc;
 
     override public void OnStartServer()
     {
         gc = FindObjectOfType<GameController>();
+        playerName = GetComponent<PlayerName>().playerName;
         playerTeam = (short)Mathf.RoundToInt(Random.Range(0f, 1f));
+
         AssignToList();
     }
 
