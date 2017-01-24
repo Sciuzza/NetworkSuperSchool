@@ -82,7 +82,7 @@ public class PlayerMovement : NetworkBehaviour
 
     private void OnCollisionEnter(Collision _other)
     {
-        if (_other.transform.CompareTag("Terrain"))
+        if (_other.gameObject.CompareTag("Terrain"))
             isJumping = false;
     }
 }
