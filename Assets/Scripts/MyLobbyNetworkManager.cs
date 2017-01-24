@@ -46,10 +46,12 @@ public class MyLobbyNetworkManager : NetworkLobbyManager
     public override bool OnLobbyServerSceneLoadedForPlayer(GameObject lobbyPlayer, GameObject gamePlayer)
     {
         var lobbyScript = lobbyPlayer.GetComponent<LobbyPlayer>();
-        var gameScript = gamePlayer.GetComponent<PlayerName>();
-        gameScript.playerName = lobbyScript.playerName;
-        gameScript.playerFace = lobbyScript.playerFace;
-        Debug.Log("Set player name: " + lobbyScript.playerName);
+        var gamePlayerName = gamePlayer.GetComponent<PlayerName>();
+        var gamePlayerScore = gamePlayer.GetComponent<PlayerScore>();
+        gamePlayerName.playerName = lobbyScript.playerName;
+        gamePlayerName.playerFace = lobbyScript.playerFace;
+        gamePlayerScore.playerTeam = lobbyScript.teamId;
+        Debug.Log("Set from lobby: " + lobbyScript.playerName + " " + lobbyScript.playerFace + " " +  lobbyScript.teamId);
         return true;
     }
 
