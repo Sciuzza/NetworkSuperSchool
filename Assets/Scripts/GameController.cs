@@ -16,7 +16,7 @@ public class GameController : NetworkBehaviour {
 	public int m_MaxDeathMatchScore = 40;
 
 	//Number of teams, with total score inside each box
-	public SyncListInt m_TotalTeamScoreList;
+	public SyncListInt m_TotalTeamScoreList = new SyncListInt();
 
     public List<PlayerScore> m_RedTeamMembers, m_BlueTeamMembers;
 
@@ -24,7 +24,15 @@ public class GameController : NetworkBehaviour {
 
     public PlayerScore GetPlayerScoreById(short playerId)
     {
-        return m_RedTeamMembers.Find(x => x.playerControllerId == playerId);       
+        if (m_RedTeamMembers.Find(x => x.playerControllerId == playerId) != null)
+        {
+            return m_RedTeamMembers.Find(x => x.playerControllerId == playerId);
+        }
+        else if (m_BlueTeamMembers.Find(x => x.playerControllerId == playerId) != null)
+        {
+            return m_BlueTeamMembers.Find(x => x.playerControllerId == playerId);
+        }
+        return null;
     }
 
     #region GAME_CONTROLLER_MONO_BEHAVIOUR_METHODS
@@ -32,9 +40,7 @@ public class GameController : NetworkBehaviour {
 	private void Awake () {
         this.m_RedTeamMembers = new List<PlayerScore>();
         this.m_BlueTeamMembers = new List<PlayerScore>();
-        this.m_TotalTeamScoreList = new SyncListInt ();
         InitializeTeams(m_NumberOfTeams);
-
 	}
 	#endregion
 
