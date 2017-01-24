@@ -17,7 +17,7 @@ public class GameController : NetworkBehaviour {
 
 	//Number of teams, with total score inside each box
 	public SyncListInt m_TotalTeamScoreList = new SyncListInt();
-
+    
     public List<PlayerScore> m_RedTeamMembers, m_BlueTeamMembers;
 
     #endregion
@@ -37,10 +37,12 @@ public class GameController : NetworkBehaviour {
 
     #region GAME_CONTROLLER_MONO_BEHAVIOUR_METHODS
     [Server] //This is executed only by server
-	private void Awake () {
+	public override void OnStartServer () {
+
         this.m_RedTeamMembers = new List<PlayerScore>();
         this.m_BlueTeamMembers = new List<PlayerScore>();
-        InitializeTeams(m_NumberOfTeams);
+  
+       // InitializeTeams(m_NumberOfTeams);
 	}
 	#endregion
 
@@ -49,41 +51,6 @@ public class GameController : NetworkBehaviour {
 	[Server] //This is executed only by server
 	public void InitializeTeams (int teams) {
 
-		int i = -1;
-
-
-		if ((teams > 1) && (teams < 5))
-			this.m_NumberOfTeams = teams - 1;
-		
-		else {
-			
-			Debug.LogError (this.ToString () + ": Game Controller cannot set the right number of teams (i. e.: from 2 to 4)!");
-			return;
-
-		}
-
-
-		if (this.m_TotalTeamScoreList != null) {
-			
-			do {
-				
-				this.m_TotalTeamScoreList.Add (0);
-
-			} while (++i < this.m_NumberOfTeams);
-
-		} else {
-
-			Debug.LogWarning (this.ToString () + ": Game Controller has forced the initialization of the <<TotalTeamScoreList>>");
-
-			this.m_TotalTeamScoreList = new SyncListInt();
-
-			do {
-
-				this.m_TotalTeamScoreList.Add (0);
-
-			} while (++i < this.m_NumberOfTeams);
-
-		}
 
 	}
 

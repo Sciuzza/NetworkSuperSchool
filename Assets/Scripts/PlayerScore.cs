@@ -22,7 +22,6 @@ public class PlayerScore : NetworkBehaviour
         AssignToList();
     }
 
-    [Server]
     void AssignToList()
     {
         if (playerTeam == 0)
