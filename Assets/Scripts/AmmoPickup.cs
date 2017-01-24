@@ -8,8 +8,17 @@ public class AmmoPickup : NetworkBehaviour
 
     // Parameters
     public int ammoAmount = 10;
+
+    [SyncVar(hook = "OnWeaponChange")]
     public int weaponIndex = 0;
+
     public int respawnTime = 5;
+
+    public void OnWeaponChange(int newIndex)
+    {
+        weaponIndex = newIndex;
+        mr.material.color = ColorController.GetColorForWeapon(newIndex);
+    }
 
     public override void OnStartClient()
     {
