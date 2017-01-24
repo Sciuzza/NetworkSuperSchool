@@ -2,7 +2,7 @@
 using UnityEngine.Networking;
 using System.Collections;
 
-public class PlayerScore: NetworkBehaviour
+public class PlayerScore : NetworkBehaviour
 {
     [SyncVar]
     public short playerPersonalScore = 0;

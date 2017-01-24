@@ -7,7 +7,7 @@ public class LobbyPlayer : NetworkLobbyPlayer
     public string playerName = "New player";
 
     [SyncVar]
-    public int teamId = 0;
+    public short teamId = 0;
 
     [SyncVar]
     public Color color = Color.white;
