@@ -16,7 +16,20 @@ public class PlayerScore : NetworkBehaviour
         gc = FindObjectOfType<GameController>();
     }
 
-	public void ChangeScore (short value)
+    public override void OnStartServer()
+    {
+        gc = FindObjectOfType<GameController>();
+        if (playerTeam == 0)
+        {
+            gc.m_RedTeamMembers.Add(playerControllerId);
+        }
+        else if (playerTeam == 1)
+        {
+            gc.m_BlueTeamMembers.Add(playerControllerId);
+        }
+    }
+
+    public void ChangeScore (short value)
     {
         playerPersonalScore += value;
         gc.ChangeTeamScore(value, playerTeam);
