@@ -70,8 +70,8 @@ public class ScorePanelUI : NetworkBehaviour
     [Server]
     void Update()
     {      
-        //redTeamTotalScore.text = gc.m_TotalTeamScoreList[0].ToString();
-        //blueTeamTotalScore.text = gc.m_TotalTeamScoreList[1].ToString();
+        redTeamTotalScore.text = gc.m_TotalTeamScoreList[0].ToString();
+        blueTeamTotalScore.text = gc.m_TotalTeamScoreList[1].ToString();
 
         for (int i = 0; i < gc.m_BlueTeamMembers.Count; i++)
         {

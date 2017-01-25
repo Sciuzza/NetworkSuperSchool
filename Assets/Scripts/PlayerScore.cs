@@ -7,7 +7,7 @@ public class PlayerScore : NetworkBehaviour
     [SyncVar]
     public short playerPersonalScore = 0;
     [SyncVar]
-    public short playerTeam = 0;
+    public short playerTeam;
     [SyncVar]
     public string playerName;
 
@@ -17,7 +17,6 @@ public class PlayerScore : NetworkBehaviour
     {
         gc = FindObjectOfType<GameController>();
         playerName = GetComponent<PlayerName>().playerName;
-        playerTeam = (short)Mathf.RoundToInt(Random.Range(0f, 1f));
 
         AssignToList();
     }
