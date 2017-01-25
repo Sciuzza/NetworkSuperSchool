@@ -9,6 +9,8 @@ public class PlayerWeaponUse : NetworkBehaviour
 
     private const int NUMBER_OF_WEAPONS = 7;
 
+    private AbstractWeapon[] weapons;
+
 
     // Synched on the server to clients
     // -1 means infinite
@@ -34,7 +36,7 @@ public class PlayerWeaponUse : NetworkBehaviour
 
     public void Awake()
     {
-        this.currentWeapons = GetComponentsInChildren<AbstractWeapon>();
+        this.weapons = GetComponentsInChildren<AbstractWeapon>();
     }
 
     public override void OnStartLocalPlayer()
@@ -66,13 +68,10 @@ public class PlayerWeaponUse : NetworkBehaviour
 
     public void ServerRefillAmmo()
     {
-        ammoList[0] = -1;
-        ammoList[1] = 1;
-        ammoList[2] = 2;
-        ammoList[3] = 3;
-        ammoList[4] = -1;
-        ammoList[5] = 5;
-        ammoList[6] = 6;
+        for (int i = 0; i < weapons.Length; i++)
+        {
+            ammoList[i] = weapons[i].StartingAmmo;
+        }
     }
 
     [Command]
@@ -125,9 +124,6 @@ public class PlayerWeaponUse : NetworkBehaviour
             }
         }
     }
-
-    public AbstractWeapon[] currentWeapons;
-
     [Command]
     public void CmdShoot(Vector3 targetPosition)
     {
@@ -146,7 +142,7 @@ public class PlayerWeaponUse : NetworkBehaviour
         // If we can shoot, shoot
         if (canShoot)
         {
-            currentWeapons[selectedWeaponIndex].Shoot(targetPosition);
+            weapons[selectedWeaponIndex].Shoot(targetPosition);
         }
     }
 
