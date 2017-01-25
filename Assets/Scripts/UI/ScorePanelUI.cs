@@ -27,7 +27,12 @@ public class ScorePanelUI : NetworkBehaviour
     {
         gc = FindObjectOfType<GameController>();
     }
-    
+
+    public override void OnStartClient()
+    {
+        InitializeScoreUI();
+    }
+
     public void InitializeScoreUI()
     {  
         for (int i = 0; i < 8; i++)
@@ -67,7 +72,6 @@ public class ScorePanelUI : NetworkBehaviour
  
     }
 
-    [Server]
     void Update()
     {      
         redTeamTotalScore.text = gc.m_TotalTeamScoreList[0].ToString();
@@ -75,12 +79,12 @@ public class ScorePanelUI : NetworkBehaviour
 
         for (int i = 0; i < gc.m_BlueTeamMembers.Count; i++)
         {
-            blueTeamNamesTextArray[i].text = gc.m_BlueTeamMembers[i].playerName;
+            blueTeamNamesTextArray[i].text = gc.m_BlueTeamMembers[i].GetComponent<PlayerName>().playerName;
             blueTeamScoreTextArray[i].text = gc.m_BlueTeamMembers[i].playerPersonalScore.ToString();
         }
         for (int i = 0; i < gc.m_RedTeamMembers.Count; i++)
         {
-            redTeamNamesTextArray[i].text = gc.m_RedTeamMembers[i].playerName;
+            redTeamNamesTextArray[i].text = gc.m_RedTeamMembers[i].GetComponent<PlayerName>().playerName;
             redTeamScoreTextArray[i].text = gc.m_RedTeamMembers[i].playerPersonalScore.ToString();
         }
 

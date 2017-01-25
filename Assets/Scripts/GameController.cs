@@ -44,19 +44,22 @@ public class GameController : NetworkBehaviour {
         this.m_TotalTeamScoreList.Add(0);
         this.m_TotalTeamScoreList.Add(0);
 
-        // InitializeTeams(m_NumberOfTeams);
+        foreach (var pScore in FindObjectsOfType<PlayerScore>())
+        {
+            if (pScore.playerTeam == 0)
+            {
+                m_RedTeamMembers.Add(pScore);
+            }
+            else if (pScore.playerTeam == 1)
+            {
+                m_BlueTeamMembers.Add(pScore);
+            }
+        }     
     }
 	#endregion
 
 
 	#region METHODS
-	[Server] //This is executed only by server
-	public void InitializeTeams (int teams) {
-
-
-	}
-
-
 
 	[Server] //This is executed only by server
 	public void ChangeTeamScore (short score, short team)
@@ -65,7 +68,6 @@ public class GameController : NetworkBehaviour {
 
 		this.EndGameCheck ();
 	}
-
 
 	public void EndGameCheck () {
 
