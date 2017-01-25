@@ -6,8 +6,6 @@ public class PlayerWeaponUse : NetworkBehaviour
 {
     public Transform weaponTr;
     private GameObject weapon;
-    const float WEAPON_RANGE = 100;
-
 
     private const int NUMBER_OF_WEAPONS = 7;
 
@@ -26,39 +24,17 @@ public class PlayerWeaponUse : NetworkBehaviour
     {
         selectedWeaponIndex = weaponIndex;
         MeshRenderer meshWeapon = weapon.GetComponent<MeshRenderer>();
-        switch (weaponIndex)
-        {
-            case 0:
-                meshWeapon.material.color = Color.white;
-                break;
-            case 1:
-                meshWeapon.material.color = Color.red;
-                break;
-            case 2:
-                meshWeapon.material.color = Color.green;
-                break;
-            case 3:
-                meshWeapon.material.color = Color.blue;
-                break;
-            case 4:
-                meshWeapon.material.color = Color.cyan;
-                break;
-            case 5:
-                meshWeapon.material.color = Color.yellow;
-                break;
-            case 6:
-                meshWeapon.material.color = Color.black;
-                break;
-        }
-
-
-
-
+        meshWeapon.material.color = ColorController.GetColorForWeapon(selectedWeaponIndex);
     }
 
     public int CurrentWeaponAmmo
     {
         get { return ammoList[selectedWeaponIndex]; }
+    }
+
+    public void Awake()
+    {
+        this.currentWeapons = GetComponentsInChildren<AbstractWeapon>();
     }
 
     public override void OnStartLocalPlayer()
@@ -150,6 +126,8 @@ public class PlayerWeaponUse : NetworkBehaviour
         }
     }
 
+    public AbstractWeapon[] currentWeapons;
+
     [Command]
     public void CmdShoot(Vector3 targetPosition)
     {
@@ -168,35 +146,8 @@ public class PlayerWeaponUse : NetworkBehaviour
         // If we can shoot, shoot
         if (canShoot)
         {
-            RaycastHit hit;
-            Vector3 direction = targetPosition - weaponTr.transform.position;
-            if (Physics.Raycast(weaponTr.position, direction, out hit, WEAPON_RANGE))
-            {
-                GameObject hitGo = hit.collider.gameObject;
-                PlayerState ps = hitGo.GetComponent<PlayerState>();
-                if (ps == null && hitGo.transform.parent != null) ps = hitGo.transform.parent.GetComponent<PlayerState>();
-
-                if (ps != null)
-                {
-                    Debug.DrawLine(weaponTr.position, hit.point, Color.green, 1f);
-                    ps.ServerTakeDamage(10, playerControllerId);
-
-                    RpcShootFeedback(hit.point, Color.green);
-                }
-                else
-                {
-                    Debug.DrawLine(weaponTr.position, hit.point, Color.red, 1f);
-                    RpcShootFeedback(hit.point, Color.red);
-                }
-
-            }
-            else
-            {
-                RpcShootFeedback(weaponTr.position + direction * WEAPON_RANGE, Color.red);
-
-            }
+            currentWeapons[selectedWeaponIndex].Shoot(targetPosition);
         }
-
     }
 
 
@@ -205,21 +156,4 @@ public class PlayerWeaponUse : NetworkBehaviour
 
 
 
-    public GameObject lineRenderer;
-
-    public IEnumerator DespawnShootFeedback(GameObject shootFeedback)
-    {
-        yield return new WaitForSeconds(1f);
-        Destroy(shootFeedback);
-    }
-
-    [ClientRpc]
-    public void RpcShootFeedback(Vector3 hitPoint, Color color)
-    {
-        GameObject shootSpawned = (GameObject)Instantiate(lineRenderer, weaponTr.position, Quaternion.identity);
-        shootSpawned.GetComponent<LineRenderer>().SetPosition(0, weaponTr.position);
-        shootSpawned.GetComponent<LineRenderer>().SetPosition(1, hitPoint);
-        shootSpawned.GetComponent<LineRenderer>().SetColors(color, color);
-        StartCoroutine(DespawnShootFeedback(shootSpawned));
-    }
 }
