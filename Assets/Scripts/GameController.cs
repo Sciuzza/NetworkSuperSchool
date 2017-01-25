@@ -17,44 +17,42 @@ public class GameController : NetworkBehaviour {
 
 	//Number of teams, with total score inside each box
 	public SyncListInt m_TotalTeamScoreList = new SyncListInt();
-    
-    public List<PlayerScore> m_RedTeamMembers, m_BlueTeamMembers;
+    public SyncListInt m_RedTeamMembers = new SyncListInt();
+    public SyncListInt m_BlueTeamMembers = new SyncListInt();
+
+    private MyLobbyNetworkManager mlRef;
 
     #endregion
 
-    public PlayerScore GetPlayerScoreById(short playerId)
+    void Awake()
     {
-        if (m_RedTeamMembers.Find(x => x.playerControllerId == playerId) != null)
+        mlRef = FindObjectOfType<MyLobbyNetworkManager>();
+    }
+
+    public GameObject GetPlayerGoById(int controllerId)
+    {
+        foreach (var connections in NetworkServer.connections)
         {
-            return m_RedTeamMembers.Find(x => x.playerControllerId == playerId);
-        }
-        else if (m_BlueTeamMembers.Find(x => x.playerControllerId == playerId) != null)
-        {
-            return m_BlueTeamMembers.Find(x => x.playerControllerId == playerId);
+            if (connections.playerControllers[0].playerControllerId == controllerId)
+            {
+                return connections.playerControllers[0].gameObject;
+            }
         }
         return null;
     }
+
+    public PlayerScore GetPlayerScoreById(short playerId)
+    {
+        return GetPlayerGoById(playerId).GetComponent<PlayerScore>();
+    }
+     
 
     #region GAME_CONTROLLER_MONO_BEHAVIOUR_METHODS
     [Server] //This is executed only by server
 	public override void OnStartServer () {
 
-        this.m_RedTeamMembers = new List<PlayerScore>();
-        this.m_BlueTeamMembers = new List<PlayerScore>();
         this.m_TotalTeamScoreList.Add(0);
-        this.m_TotalTeamScoreList.Add(0);
-
-        foreach (var pScore in FindObjectsOfType<PlayerScore>())
-        {
-            if (pScore.playerTeam == 0)
-            {
-                m_RedTeamMembers.Add(pScore);
-            }
-            else if (pScore.playerTeam == 1)
-            {
-                m_BlueTeamMembers.Add(pScore);
-            }
-        }     
+        this.m_TotalTeamScoreList.Add(0);      
     }
 	#endregion
 
