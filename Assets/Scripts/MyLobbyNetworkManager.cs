@@ -52,6 +52,7 @@ public class MyLobbyNetworkManager : NetworkLobbyManager
         gamePlayerName.playerFace = lobbyScript.playerFace;
         gamePlayerScore.playerTeam = lobbyScript.teamId;
         Debug.Log("Set from lobby: " + lobbyScript.playerName + " " + lobbyScript.playerFace + " " +  lobbyScript.teamId);
+        lobbyPlayer.SetActive(false);
         return true;
     }
 
