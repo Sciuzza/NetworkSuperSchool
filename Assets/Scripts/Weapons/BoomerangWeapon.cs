@@ -6,8 +6,14 @@ using System;
 public class BoomerangWeapon : AbstractWeapon
 {
     private const float WEAPON_RANGE = 50;
-    
+        
     public GameObject boomerangGo;
+
+    void Awake()
+    {
+        boomerangGo = Resources.Load("BoomerangPrefab") as GameObject;
+        ClientScene.RegisterPrefab(boomerangGo);
+    }
 
     public override void Shoot(Vector3 targetPosition)
     {
