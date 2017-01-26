@@ -17,6 +17,7 @@ public class LobbyPlayer : NetworkLobbyPlayer
 
 
     public PlayerName playerNameComp;
+    public LobbyScore playerScoreComp;
 
     public void Update()
     {
@@ -35,10 +36,11 @@ public class LobbyPlayer : NetworkLobbyPlayer
                 //this.readyToBegin = !readyToBegin;
             }
 
-            this.playerName = playerNameComp.playerName;
-            this.playerFace = playerNameComp.playerFace;
         }
 
+        this.playerName = playerNameComp.playerName;
+        this.playerFace = playerNameComp.playerFace;
+        this.teamId = playerScoreComp.playerTeam;
     }
 
 }
