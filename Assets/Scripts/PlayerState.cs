@@ -71,7 +71,8 @@ public class PlayerState : NetworkBehaviour
     private void ServerKillPlayer(short hittingPlayerId)
     {
         // Notify the clients that the player is dead
-        if (hittingPlayerId == MyLobbyNetworkManager.SERVER_PLAYER_ID)
+        if (hittingPlayerId == MyLobbyNetworkManager.SERVER_PLAYER_ID
+            || hittingPlayerId == this.playerControllerId)
         {
             GetComponent<PlayerScore>().ChangeScore(-1);
         }
@@ -152,9 +153,7 @@ public class PlayerState : NetworkBehaviour
         // Re-enable the player 
         GetComponent<PlayerMovement>().enabled = true;
         GetComponent<PlayerWeaponUse>().enabled = true;
-        GetComponent<MeshRenderer>().material.color = Color.white;
-        GameObject.FindGameObjectWithTag("Head").GetComponent<MeshRenderer>().material.color = Color.white;
-
+       // GetComponent<PlayerColorer>().SetColor(Color.white);:
     }
   
 }
