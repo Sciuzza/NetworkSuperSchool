@@ -6,117 +6,94 @@ public class ShotgunWeapon: AbstractWeapon
 {
     const float WEAPON_RANGE = 50;
 
-    Vector3 leftOffset = new Vector3(0, 0, -10);
-    Vector3 rightOffset = new Vector3(0, 0, 10);
+    [SyncVar]
+    int fragments = 6;
+
+    Vector3 x;
+    Vector3 z;
+    Vector3 y;
+
+    int damage = 0;
+
+    RaycastHit hit;
+
+    void Awake()
+    {
+        lineRenderer = (GameObject)Resources.Load("LineRenderer");
+    }
+
+    void Randomize()
+    {
+        x = new Vector3(Random.Range(-8, 8), 0, 0);
+        z = new Vector3(0, 0, Random.Range(-5, 5));
+        y = new Vector3(0, Random.Range(-5, 5), 0);
+    }
 
     public override void Shoot(Vector3 targetPosition)
     {
-        RaycastHit hit;
-        RaycastHit hitTwo;
-        RaycastHit hitThree;
+        
+        //RaycastHit hitTwo;
+        //RaycastHit hitThree;
 
         Vector3 direction = targetPosition - weaponTr.transform.position;
 
-        #region FirstShot
+      
 
-        if (Physics.Raycast(weaponTr.position, direction, out hit, WEAPON_RANGE))
+        for (int i = 0; i < fragments; i++)
         {
-            GameObject hitGo = hit.collider.gameObject;
-            PlayerState ps = hitGo.GetComponent<PlayerState>();
-            if (ps == null && hitGo.transform.parent != null) ps = hitGo.transform.parent.GetComponent<PlayerState>();
+            Randomize();
 
-            if (ps != null)
+            hit = new RaycastHit();
+
+            if (Physics.Raycast(weaponTr.position, (direction + x + z + y), out hit, WEAPON_RANGE))
             {
-                Debug.DrawLine(weaponTr.position, hit.point, Color.green, 1f);
-                ps.ServerTakeDamage(10, playerControllerId);
-                RpcShootFeedback(hit.point, Color.green);
-                RpcShootFeedback(hit.point + leftOffset, Color.red);
-                RpcShootFeedback(hit.point + rightOffset, Color.red);
+                GameObject hitGo = hit.collider.gameObject;
+
+                PlayerState ps = hitGo.GetComponent<PlayerState>();
+                if (ps == null && hitGo.transform.parent != null) ps = hitGo.transform.parent.GetComponent<PlayerState>();
+
+                if (ps != null)
+                {
+                    Debug.DrawLine(weaponTr.position, hit.point + x + z + y, Color.green, 1f);
+
+                    ShotgunDamage(hit.distance);
+
+                    ps.ServerTakeDamage(damage, playerControllerId);
+                    RpcShootFeedback(hit.point + x + z + y, Color.green);
+
+                }
+                else if ((ps == null))
+                {
+                    //Debug.DrawLine(weaponTr.position, hit.point, Color.red, 1f);
+                    RpcShootFeedback(hit.point + x + z + y, Color.red);
+
+                }
+
             }
+
             else
             {
-                //Debug.DrawLine(weaponTr.position, hit.point, Color.red, 1f);
-                RpcShootFeedback(hit.point, Color.red);
-                RpcShootFeedback(hit.point + leftOffset, Color.red);
-                RpcShootFeedback(hit.point + rightOffset, Color.red);
-            }
-
-        }
-        #endregion
-
-        #region Second Shoot leftOffset
-
-        else if (Physics.Raycast(weaponTr.position, direction + leftOffset, out hitTwo, WEAPON_RANGE))
-        {
-
-            GameObject hitGoTwo = hitTwo.collider.gameObject;
-            PlayerState ps = hitGoTwo.GetComponent<PlayerState>();
-            if (ps == null && hitGoTwo.transform.parent != null) ps = hitGoTwo.transform.parent.GetComponent<PlayerState>();
-
-            if (ps != null)
-            {
-                Debug.DrawLine(weaponTr.position, (hitTwo.point + leftOffset), Color.green, 1f);
-                ps.ServerTakeDamage(10, playerControllerId);
-                RpcShootFeedback(hitTwo.point + leftOffset, Color.green);
-                RpcShootFeedback(hitTwo.point, Color.red);
-                RpcShootFeedback(hitTwo.point + rightOffset, Color.red);
-            }
-            else
-            {
-
-                //Second Bullet
-                Debug.DrawLine(weaponTr.position, (hitTwo.point + leftOffset), Color.red, 1f);
-                RpcShootFeedback(hitTwo.point + leftOffset, Color.red);
-                RpcShootFeedback(hitTwo.point + rightOffset, Color.red);
-                RpcShootFeedback(hitTwo.point, Color.red);
+                RpcShootFeedback(weaponTr.position + direction +x+y+z * WEAPON_RANGE, Color.red);
 
             }
-
-
         }
         
 
-        #endregion
+    }
 
-        #region ThirdShoot rightOffset
-
-        else if (Physics.Raycast(weaponTr.position, direction + rightOffset, out hitThree, WEAPON_RANGE))
-        {
-            GameObject hitGoThree = hitThree.collider.gameObject;
-            PlayerState ps = hitGoThree.GetComponent<PlayerState>();
-            if (ps == null && hitGoThree.transform.parent != null) ps = hitGoThree.transform.parent.GetComponent<PlayerState>();
-
-            if (ps != null)
-            {
-
-                //Second Bullet
-                Debug.DrawLine(weaponTr.position, (hitThree.point + rightOffset), Color.green, 1f);
-
-                RpcShootFeedback(hitThree.point + rightOffset, Color.green);
-                RpcShootFeedback(hitThree.point + leftOffset, Color.red);
-                RpcShootFeedback(hitThree.point, Color.red);
-            }
-            else
-            {
-
-                //Second Bullet
-                Debug.DrawLine(weaponTr.position, (hitThree.point + rightOffset), Color.red, 1f);
-                RpcShootFeedback(hitThree.point + rightOffset, Color.red);
-                RpcShootFeedback(hitThree.point + leftOffset, Color.red);
-                RpcShootFeedback(hitThree.point, Color.red);
-
-            }
-
-        }
-
-        else
-        {
-            RpcShootFeedback(weaponTr.position + direction * WEAPON_RANGE, Color.red);
-            RpcShootFeedback(weaponTr.position + direction + leftOffset * WEAPON_RANGE, Color.red);
-            RpcShootFeedback(weaponTr.position + direction + rightOffset * WEAPON_RANGE, Color.red);
-        }
-        #endregion
-
+    void ShotgunDamage(float distance)
+    {
+        if (distance > 0 && distance <= 10)
+            damage = 50;
+        else if (distance > 10 && distance <= 20)
+            damage = 40;
+        else if (distance > 20 && distance <= 30)
+            damage = 30;
+        else if (distance > 30 && distance <= 40)
+            damage = 20;
+        else if (distance > 40 && distance <= 50)
+            damage = 10;
+       
     }
 
     [ClientRpc]
