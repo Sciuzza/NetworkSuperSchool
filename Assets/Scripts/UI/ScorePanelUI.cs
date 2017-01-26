@@ -55,6 +55,7 @@ public class ScorePanelUI : NetworkBehaviour
 
     void Update()
     {
+        if (isServer) return;
 
         for (int i = 0; i < gc.m_RedTeamMembers.Count; i++)
         {
