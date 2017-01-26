@@ -14,8 +14,8 @@ public class DamageArea : NetworkBehaviour
     public override void OnStartClient()
     {
         // We keep only the particle system
-        Destroy(boxColl);
-        Destroy(mr);
+        //Destroy(boxColl);
+        //Destroy(mr);
     }
 
     public override void OnStartServer()

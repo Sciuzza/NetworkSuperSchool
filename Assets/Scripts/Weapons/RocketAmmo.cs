@@ -8,7 +8,7 @@ public class RocketAmmo : NetworkBehaviour
     bool isExploded;
     public Vector3 shootDir;
     public short playerId;
-    public int explosiveForce = 500;
+    public int explosiveForce = 5;
     public GameObject particleFeedbackGo;
     public int explosionRadius = 5;
     private Collider[] playerColliders;
@@ -27,39 +27,68 @@ public class RocketAmmo : NetworkBehaviour
 
     void OnDrawGizmos()
     {
-        Gizmos.color = new Color(1,0,0,0.5f);
-        Gizmos.DrawSphere(this.transform.position, explosionRadius);
+        if (isExploded)
+        {
+            Gizmos.color = new Color(1, 0, 0, 0.5f);
+            Gizmos.DrawSphere(this.transform.position, explosionRadius);
+        }
+ 
     }
 
     void OnCollisionEnter(Collision coll)
     {
         if (isServer)
         {
-            if (coll.gameObject.GetComponent<NetworkIdentity>().playerControllerId != playerId)
+            if (coll.gameObject.GetComponent<NetworkIdentity>())
             {
-                isExploded = true;
-                GetComponentsInChildren<MeshRenderer>()[0].material.color = new Color(0, 0, 0, 0);
-                GetComponentsInChildren<MeshRenderer>()[1].enabled = true;
-                playerColliders = Physics.OverlapSphere(this.transform.position, explosionRadius, 1<<8);
+                if (coll.gameObject.GetComponent<NetworkIdentity>().playerControllerId != playerId)
+                {
+                    ExplosionLogic();
+                }
 
-                StartCoroutine(DeactivateTrigger());
-            }       
+            }
+            else
+            {
+                ExplosionLogic();
+            }
         }
+    }
+
+    private void ExplosionLogic()
+    {
+        isExploded = true;
+        GetComponentsInChildren<MeshRenderer>()[0].material.color = new Color(0, 0, 0, 0);
+        playerColliders = Physics.OverlapSphere(this.transform.position, explosionRadius, 1 << 8);
+        DoDamage();
+        RpcFeedback();
+        StartCoroutine(DeactivateTrigger());
     }
 
     void DoDamage()
     {
-        foreach (var player in playerColliders)
+        if (isServer)
         {
-            player.GetComponent<PlayerState>().ServerTakeDamage(25, playerId);
-        }
+            foreach (var player in playerColliders)
+            {
+                if (isServer)
+                {
+                    if (player.GetComponent<PlayerState>())
+                    {
+                        player.GetComponent<PlayerMovement>().isStunned = true;
+                        Debug.Log(player.GetComponent<Rigidbody>());
+                        player.GetComponent<Rigidbody>().AddExplosionForce(explosiveForce/3, this.transform.position, explosionRadius, 3f, ForceMode.Impulse);
+                        player.GetComponent<PlayerState>().ServerTakeDamage(25, playerId);
+                    }
+                }    
+            }
+        }      
     }
 
     IEnumerator DeactivateTrigger()
     {
         if (isServer)
         {
-            yield return new WaitForSeconds(2);
+            yield return new WaitForSeconds(1);
             NetworkServer.Destroy(gameObject);
         }
     }
@@ -72,15 +101,6 @@ public class RocketAmmo : NetworkBehaviour
 
     void OnTriggerEnter(Collider coll)
     {
-        if (isServer)
-        {
-            if (coll.GetComponent<PlayerState>())
-            {
-                coll.GetComponent<PlayerMovement>().isStunned = true;
-                Debug.Log(coll.GetComponent<Rigidbody>());
-                coll.GetComponent<Rigidbody>().AddExplosionForce(explosiveForce, this.transform.position, 50,3,ForceMode.Impulse);
-                coll.GetComponent<PlayerState>().ServerTakeDamage(50, playerId);
-            }
-        }   
+       
     }
 }

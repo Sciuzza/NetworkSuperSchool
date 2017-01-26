@@ -7,12 +7,6 @@ public class GameController : NetworkBehaviour
 {
 
 	#region GAME_CONTROLLER_PARAMETERS
-	//0 = Team DeathMatch
-	public int m_GameModality = 0;
-
-	// 1 - 4
-	private int m_NumberOfTeams = 2;
-
 	//Number of Max Score for DeathMatch and Team DeathMatch modalities
 	public int m_MaxDeathMatchScore = 40;
 
@@ -21,7 +15,14 @@ public class GameController : NetworkBehaviour
     public SyncListInt m_RedTeamMembers = new SyncListInt();
     public SyncListInt m_BlueTeamMembers = new SyncListInt();
     #endregion
+
+    private MyLobbyNetworkManager mlRef;
     
+    void Awake()
+    {
+        mlRef = FindObjectOfType<MyLobbyNetworkManager>();
+    }
+
     public GameObject GetPlayerGoById(int controllerId)
     {
         foreach (var connections in NetworkServer.connections)
