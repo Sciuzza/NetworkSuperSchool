@@ -1,11 +1,13 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
+using System.Collections;
 
 public class PlayerMovement : NetworkBehaviour
 {
     // Parameters
     public float speed = 3;
     private bool isJumping;
+    public bool isStunned;
     
     // References
     public Transform headTr;
@@ -70,11 +72,14 @@ public class PlayerMovement : NetworkBehaviour
             totalDir = moveDir * dz * 20 + rightDir * dx * 20;
             totalDir.Normalize();
 
-            if (totalDir.sqrMagnitude == 0)
-                rb.velocity += new Vector3(0, totalDir.y, 0);
-            else if (!isJumping)
-                rb.velocity = totalDir * 20;
-
+            if (!isStunned)
+            {
+                if (totalDir.sqrMagnitude == 0)
+                    rb.velocity += new Vector3(0, totalDir.y, 0);
+                else if (!isJumping)
+                    rb.velocity = totalDir * 20;
+            }
+       
             #endregion
         }
     }
@@ -82,6 +87,10 @@ public class PlayerMovement : NetworkBehaviour
     private void OnCollisionEnter(Collision _other)
     {
         if (_other.gameObject.CompareTag("Terrain"))
+        {
             isJumping = false;
+            isStunned = false;
+        }
+         
     }
 }

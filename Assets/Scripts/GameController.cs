@@ -80,7 +80,7 @@ public class GameController : NetworkBehaviour {
 
     public void ReturnToLobby()
     {
-        FindObjectOfType<MyLobbyNetworkManager>().ServerReturnToLobby();
+        mlRef.ServerReturnToLobby();
     }
 	#endregion
 }
