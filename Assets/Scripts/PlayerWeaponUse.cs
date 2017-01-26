@@ -45,6 +45,11 @@ public class PlayerWeaponUse : NetworkBehaviour
         //weapons[4] = this.gameObject.AddComponent<BoomerangWeapon>();
         //weapons[5] = this.gameObject.AddComponent<DucklingWeapon>();
         //weapons[6] = this.gameObject.AddComponent<RocketLauncherWeapon>();
+
+        foreach(var weapon in weapons)
+        {
+            if (weapon != null) weapon.weaponTr = weaponTr;
+        }
     }
 
     public override void OnStartLocalPlayer()
