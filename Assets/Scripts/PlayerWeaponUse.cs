@@ -83,7 +83,8 @@ public class PlayerWeaponUse : NetworkBehaviour
     {
         for (int i = 0; i < weapons.Length; i++)
         {
-            ammoList[i] = weapons[i].StartingAmmo;
+            if (weapons[i] != null)
+                ammoList[i] = weapons[i].StartingAmmo;
         }
     }
 
