@@ -14,9 +14,15 @@ public class LobbyScore: NetworkBehaviour
         }
     }
 
+    void Update()
+    {
+        GetComponent<PlayerColorer>().SetPlayerTeamColor(playerTeam);
+    }
+
     [Command]
     public void CmdChangeTeam(short teamId)
     {
+        UnityEngine.Debug.Log("TEAM: " + teamId);
         this.playerTeam = teamId;
     }
 

@@ -8,15 +8,7 @@ public class PlayerColorer : NetworkBehaviour
 
     public void SetPlayerTeamColor(short teamId)
     {
-        switch (teamId)
-        {
-            case 0:
-                SetPlayerColor(Color.red);
-                break;
-            case 1:
-                SetPlayerColor(Color.blue);
-                break;
-        }
+        SetPlayerColor(ColorController.GetColorForTeam(teamId));
     }
 
     public void SetPlayerColor(Color col)
