@@ -8,6 +8,7 @@ public class RocketAmmo : NetworkBehaviour
     bool isExploded;
     public Vector3 shootDir;
     public short playerId;
+    public int explosiveForce = 20;
 
 	void Update ()
     {
@@ -51,6 +52,7 @@ public class RocketAmmo : NetworkBehaviour
         {
             if (coll.GetComponent<PlayerState>())
             {
+                coll.GetComponent<Rigidbody>().AddExplosionForce(explosiveForce, this.transform.position, GetComponentInChildren<SphereCollider>().radius);
                 coll.GetComponent<PlayerState>().ServerTakeDamage(50, playerId);
             }
         }   
