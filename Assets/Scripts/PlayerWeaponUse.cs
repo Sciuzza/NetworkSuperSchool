@@ -41,7 +41,7 @@ public class PlayerWeaponUse : NetworkBehaviour
         weapons[0] = this.gameObject.AddComponent<BasicWeapon>();
         //weapons[1] = this.gameObject.AddComponent<ShotgunWeapon>();
         //weapons[2] = this.gameObject.AddComponent<FlamethrowerWeapons>();
-        //weapons[3] = this.gameObject.AddComponent<GranadeLauncherWeapon>();
+        weapons[3] = this.gameObject.AddComponent<GrenadeLauncherWeapon>();
         weapons[4] = this.gameObject.AddComponent<BoomerangWeapon>();
         //weapons[5] = this.gameObject.AddComponent<DucklingWeapon>();
         weapons[6] = this.gameObject.AddComponent<RocketWeapon>();
