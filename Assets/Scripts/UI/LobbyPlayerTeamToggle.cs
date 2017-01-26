@@ -4,14 +4,19 @@ public class LobbyPlayerTeamToggle : NetworkBehaviour
 {
     public short teamId;
     public LobbyScore lobbyScore;
-    
-    public void UpdateTeam(bool on)
+
+    public override void OnStartLocalPlayer()
+    {
+        this.GetComponent<UnityEngine.UI.Toggle>().onValueChanged.AddListener(UpdateTeam);
+    }
+
+    void UpdateTeam(bool on)
     {
         if (on)
         {
-            if (lobbyScore != null)
+            if (isLocalPlayer)
             {
-                lobbyScore.ChangeTeam(teamId);
+                lobbyScore.CmdChangeTeam(teamId);
             }
         }
     }

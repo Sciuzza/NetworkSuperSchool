@@ -14,8 +14,6 @@ public class PlayerScore : NetworkBehaviour
     override public void OnStartClient()
     {
         gc = FindObjectOfType<GameController>();
-
-        GetComponent<PlayerColorer>().SetPlayerTeamColor(playerTeam);
     }
 
     public override void OnStartServer()
