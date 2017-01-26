@@ -71,7 +71,8 @@ public class PlayerState : NetworkBehaviour
     private void ServerKillPlayer(short hittingPlayerId)
     {
         // Notify the clients that the player is dead
-        if (hittingPlayerId == MyLobbyNetworkManager.SERVER_PLAYER_ID)
+        if (hittingPlayerId == MyLobbyNetworkManager.SERVER_PLAYER_ID
+            || hittingPlayerId == this.playerControllerId)
         {
             GetComponent<PlayerScore>().ChangeScore(-1);
         }

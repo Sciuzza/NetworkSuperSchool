@@ -6,6 +6,11 @@ public class BasicWeapon : AbstractWeapon
 {
     const float WEAPON_RANGE = 100;
 
+    void Awake()
+    {
+        lineRenderer = (GameObject)Resources.Load("LineRenderer");
+    }
+
     public override void Shoot(Vector3 targetPosition)
     {
         RaycastHit hit;

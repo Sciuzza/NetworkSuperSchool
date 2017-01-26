@@ -7,6 +7,7 @@ public class RocketAmmo : NetworkBehaviour
 {
     bool isExploded;
     public Vector3 shootDir;
+    public short playerId;
 
 	void Update ()
     {
@@ -14,15 +15,14 @@ public class RocketAmmo : NetworkBehaviour
         {
             if (!isExploded)
             {
-                this.transform.position += shootDir * 20 * Time.deltaTime;
-                //this.transform.eulerAngles += new Vector3(0, 0, 50) * Time.deltaTime;
+                this.transform.position += shootDir * 20 * Time.deltaTime;      
             }
         }     
 	}
 
     void OnCollisionEnter(Collision coll)
     {
-       // if (isServer)
+        if (isServer)
         {
             if (coll.transform.tag != "Player")
             {
@@ -31,24 +31,27 @@ public class RocketAmmo : NetworkBehaviour
                 GetComponentsInChildren<MeshRenderer>()[1].enabled = true;
                 GetComponentInChildren<SphereCollider>().enabled = true;
                 StartCoroutine(DeactivateTrigger());
-            }
-        
+            }       
         }
     }
 
     IEnumerator DeactivateTrigger()
     {
-        yield return new WaitForSeconds(2);
-        Destroy(this.gameObject);
+        if (isServer)
+        {
+            yield return new WaitForSeconds(2);
+            NetworkServer.Destroy(gameObject);
+        }
+    
     }
 
     void OnTriggerEnter(Collider coll)
     {
-       // if (isServer)
+        if (isServer)
         {
             if (coll.GetComponent<PlayerState>())
             {
-                coll.GetComponent<PlayerState>().ServerTakeDamage(50, playerControllerId);
+                coll.GetComponent<PlayerState>().ServerTakeDamage(50, playerId);
             }
         }   
     }

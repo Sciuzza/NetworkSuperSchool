@@ -7,12 +7,19 @@ public class RocketWeapon : AbstractWeapon
 {
     private const float WEAPON_RANGE = 200;
 
-    public GameObject rocketGo;
+    public GameObject rocketPrefab;
+
+    void Awake()
+    {
+        rocketPrefab = (GameObject)Resources.Load("RocketPrefab");
+        ClientScene.RegisterPrefab(rocketPrefab);
+    }
 
     public override void Shoot(Vector3 targetPosition)
     {
-        rocketGo = (GameObject) Instantiate(rocketGo, weaponTr.position + weaponTr.forward * 3, Quaternion.identity);
+        GameObject rocketGo = (GameObject) Instantiate(rocketPrefab, weaponTr.position + weaponTr.forward * 3, Quaternion.identity);
         rocketGo.GetComponent<RocketAmmo>().shootDir = weaponTr.forward;
+        rocketGo.GetComponent<RocketAmmo>().playerId = this.playerControllerId;
         rocketGo.transform.forward = weaponTr.forward;
       
         NetworkServer.Spawn(rocketGo);

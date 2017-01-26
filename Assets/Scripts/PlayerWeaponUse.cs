@@ -44,7 +44,7 @@ public class PlayerWeaponUse : NetworkBehaviour
         //weapons[3] = this.gameObject.AddComponent<GranadeLauncherWeapon>();
         weapons[4] = this.gameObject.AddComponent<BoomerangWeapon>();
         //weapons[5] = this.gameObject.AddComponent<DucklingWeapon>();
-        //weapons[6] = this.gameObject.AddComponent<RocketLauncherWeapon>();
+        weapons[6] = this.gameObject.AddComponent<RocketWeapon>();
 
         foreach(var weapon in weapons)
         {
@@ -83,7 +83,8 @@ public class PlayerWeaponUse : NetworkBehaviour
     {
         for (int i = 0; i < weapons.Length; i++)
         {
-            ammoList[i] = weapons[i].StartingAmmo;
+            if (weapons[i] != null)
+                ammoList[i] = weapons[i].StartingAmmo;
         }
     }
 
