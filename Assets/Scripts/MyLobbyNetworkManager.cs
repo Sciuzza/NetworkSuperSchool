@@ -14,7 +14,14 @@ public class MyLobbyNetworkManager : NetworkLobbyManager
     public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId)
     {
         base.OnServerAddPlayer(conn, playerControllerId);
-        conn.playerControllers[0].gameObject.transform.position = Random.onUnitSphere * 4;
+
+        // Reorder all players
+        int index = 0;
+        foreach (var otherConn in NetworkServer.connections)
+        {
+            otherConn.playerControllers[0].gameObject.transform.position = Vector3.right*index + Vector3.left*5;
+            index++;
+        }
     }
 
     void OnGUI()
