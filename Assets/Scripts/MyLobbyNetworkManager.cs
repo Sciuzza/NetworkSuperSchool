@@ -19,8 +19,11 @@ public class MyLobbyNetworkManager : NetworkLobbyManager
         int index = 0;
         foreach (var otherConn in NetworkServer.connections)
         {
-            otherConn.playerControllers[0].gameObject.transform.position = Vector3.right*index + Vector3.left*5;
-            index++;
+            if (otherConn != null && otherConn.playerControllers != null)
+            {
+                otherConn.playerControllers[0].gameObject.transform.position = Vector3.right * index + Vector3.left * 5;
+                index++;
+            }
         }
     }
 

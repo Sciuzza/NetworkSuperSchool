@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
-using UnityEngine.Networking;
 
-public class PlayerColorer : NetworkBehaviour
+public class PlayerColorer : MonoBehaviour
 {
     public MeshRenderer bodyMr;
     public MeshRenderer headMr;

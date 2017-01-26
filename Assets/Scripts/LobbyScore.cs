@@ -1,6 +1,6 @@
 ﻿using UnityEngine.Networking;
 
-public class LobbyScore: NetworkBehaviour
+public class LobbyScore : NetworkBehaviour
 {
     [SyncVar]
     public short playerTeam = 0;
@@ -11,7 +11,10 @@ public class LobbyScore: NetworkBehaviour
         foreach(var toggl in teamToggles)
         {
             toggl.lobbyScore = this;
+            toggl.GetComponent<UnityEngine.UI.Toggle>().onValueChanged.AddListener(toggl.UpdateTeam);
         }
+
+        CmdChangeTeam((short)UnityEngine.Random.Range(0, 1));
     }
 
     void Update()
@@ -19,10 +22,14 @@ public class LobbyScore: NetworkBehaviour
         GetComponent<PlayerColorer>().SetPlayerTeamColor(playerTeam);
     }
 
+    public void ChangeTeam(short teamId)
+    {
+        CmdChangeTeam(teamId);
+    }
+
     [Command]
     public void CmdChangeTeam(short teamId)
     {
-        UnityEngine.Debug.Log("TEAM: " + teamId);
         this.playerTeam = teamId;
     }
 
