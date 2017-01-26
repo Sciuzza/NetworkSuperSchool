@@ -38,7 +38,6 @@ public class LobbyPlayer : NetworkLobbyPlayer
             this.playerName = playerNameComp.playerName;
             this.playerFace = playerNameComp.playerFace;
         }
-
     }
 
 }

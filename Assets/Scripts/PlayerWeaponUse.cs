@@ -40,10 +40,10 @@ public class PlayerWeaponUse : NetworkBehaviour
         weapons = new AbstractWeapon[NUMBER_OF_WEAPONS];
         weapons[0] = this.gameObject.AddComponent<BasicWeapon>();
         //weapons[1] = this.gameObject.AddComponent<ShotgunWeapon>();
-        weapons[2] = this.gameObject.AddComponent<FlameThrowerWeapon>();
-        //weapons[3] = this.gameObject.AddComponent<GranadeLauncherWeapon>();
+        //weapons[2] = this.gameObject.AddComponent<FlamethrowerWeapons>();
+        weapons[3] = this.gameObject.AddComponent<GrenadeLauncherWeapon>();
         weapons[4] = this.gameObject.AddComponent<BoomerangWeapon>();
-        //weapons[5] = this.gameObject.AddComponent<DucklingWeapon>();
+        weapons[5] = this.gameObject.AddComponent<DucklingWeapon>();
         weapons[6] = this.gameObject.AddComponent<RocketWeapon>();
 
         foreach(var weapon in weapons)
