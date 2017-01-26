@@ -152,9 +152,7 @@ public class PlayerState : NetworkBehaviour
         // Re-enable the player 
         GetComponent<PlayerMovement>().enabled = true;
         GetComponent<PlayerWeaponUse>().enabled = true;
-        GetComponent<MeshRenderer>().material.color = Color.white;
-        GameObject.FindGameObjectWithTag("Head").GetComponent<MeshRenderer>().material.color = Color.white;
-
+       // GetComponent<PlayerColorer>().SetColor(Color.white);:
     }
   
 }
