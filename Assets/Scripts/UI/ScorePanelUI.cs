@@ -50,44 +50,48 @@ public class ScorePanelUI : NetworkBehaviour
             redTeamScoreTextArray[i] = redTeamScoreArray[i].GetComponent<Text>();
             blueTeamScoreTextArray[i] = blueTeamScoreArray[i].GetComponent<Text>();
         }
-
-        for (int i = 0; i < 8; i++)
-        {
-            if (i >= gc.m_RedTeamMembers.Count)
-            {
-                redTeamNamesArray[i].SetActive(false);
-                redTeamScoreArray[i].SetActive(false);
-            }      
-        }
-
-        for (int i = 0; i < 8; i++)
-        {
-            if (i >= gc.m_BlueTeamMembers.Count)
-            {
-                blueTeamNamesArray[i].SetActive(false);
-                blueTeamScoreArray[i].SetActive(false);
-            }     
-        }
         transform.GetChild(0).gameObject.SetActive(false);
- 
     }
 
     void Update()
-    {      
-        redTeamTotalScore.text = gc.m_TotalTeamScoreList[0].ToString();
-        blueTeamTotalScore.text = gc.m_TotalTeamScoreList[1].ToString();
+    {
+
+        for (int i = 0; i < gc.m_RedTeamMembers.Count; i++)
+        {
+            redTeamNamesArray[i].SetActive(true);
+            redTeamScoreArray[i].SetActive(true);
+        }
+        for (int i = gc.m_RedTeamMembers.Count; i < 8; i++)
+        {
+            redTeamNamesArray[i].SetActive(false);
+            redTeamScoreArray[i].SetActive(false);
+        }
 
         for (int i = 0; i < gc.m_BlueTeamMembers.Count; i++)
         {
-            blueTeamNamesTextArray[i].text = gc.m_BlueTeamMembers[i].GetComponent<PlayerName>().playerName;
-            blueTeamScoreTextArray[i].text = gc.m_BlueTeamMembers[i].playerPersonalScore.ToString();
+            blueTeamNamesArray[i].SetActive(true);
+            blueTeamScoreArray[i].SetActive(true);
+        }
+        for (int i = gc.m_BlueTeamMembers.Count; i < 8; i++)
+        {
+            blueTeamNamesArray[i].SetActive(false);
+            blueTeamScoreArray[i].SetActive(false);
+        }
+
+        redTeamTotalScore.text = gc.m_TotalTeamScoreList[0].ToString();
+        blueTeamTotalScore.text = gc.m_TotalTeamScoreList[1].ToString();
+        
+        for (int i = 0; i < gc.m_BlueTeamMembers.Count; i++)
+        {
+            blueTeamNamesTextArray[i].text = gc.GetPlayerGoById((short)gc.m_BlueTeamMembers[i]).GetComponent<PlayerName>().playerName;
+            blueTeamScoreTextArray[i].text = gc.GetPlayerGoById((short)gc.m_BlueTeamMembers[i]).GetComponent<PlayerScore>().playerPersonalScore.ToString();
         }
         for (int i = 0; i < gc.m_RedTeamMembers.Count; i++)
         {
-            redTeamNamesTextArray[i].text = gc.m_RedTeamMembers[i].GetComponent<PlayerName>().playerName;
-            redTeamScoreTextArray[i].text = gc.m_RedTeamMembers[i].playerPersonalScore.ToString();
+            redTeamNamesTextArray[i].text = gc.GetPlayerGoById((short)gc.m_RedTeamMembers[i]).GetComponent<PlayerName>().playerName;
+            redTeamScoreTextArray[i].text = gc.GetPlayerGoById((short)gc.m_RedTeamMembers[i]).GetComponent<PlayerScore>().playerPersonalScore.ToString();
         }
-
+        
         if (Input.GetKeyDown(KeyCode.Tab))
         {
             transform.GetChild(0).gameObject.SetActive(true);          
