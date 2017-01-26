@@ -3,7 +3,8 @@ using UnityEngine.Networking;
 using System.Collections;
 using System.Collections.Generic;
 
-public class GameController : NetworkBehaviour {
+public class GameController : NetworkBehaviour
+{
 
 	#region GAME_CONTROLLER_PARAMETERS
 	//0 = Team DeathMatch
@@ -19,16 +20,8 @@ public class GameController : NetworkBehaviour {
 	public SyncListInt m_TotalTeamScoreList = new SyncListInt();
     public SyncListInt m_RedTeamMembers = new SyncListInt();
     public SyncListInt m_BlueTeamMembers = new SyncListInt();
-
-    private MyLobbyNetworkManager mlRef;
-
     #endregion
-
-    void Awake()
-    {
-        mlRef = FindObjectOfType<MyLobbyNetworkManager>();
-    }
-
+    
     public GameObject GetPlayerGoById(int controllerId)
     {
         foreach (var connections in NetworkServer.connections)
